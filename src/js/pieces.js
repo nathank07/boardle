@@ -1,4 +1,17 @@
-function convertPieces(){
+import bk from '../assets/cburnett/bK.svg' //black king
+import wk from '../assets/cburnett/wK.svg' //white king
+import bq from '../assets/cburnett/bQ.svg' //black queen
+import wq from '../assets/cburnett/wQ.svg' //white queen
+import br from '../assets/cburnett/bR.svg' //black rook
+import wr from '../assets/cburnett/wR.svg' //white rook
+import bb from '../assets/cburnett/bB.svg' //black bishop
+import wb from '../assets/cburnett/wB.svg' //white bishop
+import bn from '../assets/cburnett/bN.svg' //black knight
+import wn from '../assets/cburnett/wN.svg' //white knight
+import bp from '../assets/cburnett/bP.svg' //black pawn
+import wp from '../assets/cburnett/wP.svg' //white pawn
+
+export function convertPieces(){
     const board = document.getElementById('board');
     board.querySelectorAll('.row').forEach(row => {
         row.querySelectorAll('.square').forEach(square => {
@@ -8,7 +21,8 @@ function convertPieces(){
     return arr;
 }
 
-function presentPiece(square, piece){
+export function presentPiece(square, piece){
+    console.log('a');
     const pieces = {
         k: bk,
         K: wk,
@@ -113,4 +127,3 @@ function presentPiece(square, piece){
 
 }
 
-export {presentPiece}
