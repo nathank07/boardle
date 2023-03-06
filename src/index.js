@@ -1,4 +1,4 @@
 import './styles.css';
 import createBoard from './js/board.js';
 
-createBoard();
+createBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
