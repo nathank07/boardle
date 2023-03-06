@@ -79,15 +79,13 @@ function presentPiece(square, piece){
     if(piece !== "#") {  
         const pIcon = new Image();
         pIcon.src = pieces[piece];
-        console.log(square.getBoundingClientRect());
-        pIcon.style.width = square.style.width;
-        dragElement(pIcon);
+        dragPiece(pIcon);
         square.appendChild(pIcon);
     }
 
-    function dragElement(elmnt) {
-        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        elmnt.onmousedown = dragMouseDown;
+    function dragPiece(p) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        p.onmousedown = dragMouseDown;
 
         function dragMouseDown(e) {
             e = e || window.event;
@@ -95,12 +93,21 @@ function presentPiece(square, piece){
             // get the mouse cursor position at startup:
             pos3 = e.clientX;
             pos4 = e.clientY;
+            // get the offset between the element and its parent container:
+            let rect = p.getBoundingClientRect();
+            let offsetX = rect.left - p.offsetLeft;
+            let offsetY = rect.top - p.offsetTop;
+            // set the initial position of the element to the center of the cursor:
+            let centerX = p.offsetWidth / 2;
+            let centerY = p.offsetHeight / 2;
+            p.style.left = (pos3 - centerX - offsetX) + "px";
+            p.style.top = (pos4 - centerY - offsetY) + "px";
             document.onmouseup = closeDragElement;
             // call a function whenever the cursor moves:
             document.onmousemove = elementDrag;
-          }
+        }
         
-          function elementDrag(e) {
+        function elementDrag(e) {
             e = e || window.event;
             e.preventDefault();
             // calculate the new cursor position:
@@ -109,16 +116,47 @@ function presentPiece(square, piece){
             pos3 = e.clientX;
             pos4 = e.clientY;
             // set the element's new position:
-            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-          }
+            p.style.top = (p.offsetTop - pos2) + "px";
+            p.style.left = (p.offsetLeft - pos1) + "px";
+            p.style.zIndex = "2";
+        }
         
-          function closeDragElement() {
+        function closeDragElement() {
             // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;
+          
+            // find all potential target elements:
+            let targets = document.querySelectorAll('#board .square');
+          
+            // calculate the center coordinates of the dragged element:
+            let dragSq = p.getBoundingClientRect();
+            let dragX = dragSq.left + dragSq.width / 2;
+            let dragY = dragSq.top + dragSq.height / 2;
+          
+            // find the closest target element:
+            let closestTarget = null;
+            let closestDistance = Infinity;
+            targets.forEach(target => {
+              let targetSq = target.getBoundingClientRect();
+              let targetX = targetSq.left + targetSq.width / 2;
+              let targetY = targetSq.top + targetSq.height / 2;
+              let distance = Math.sqrt(Math.pow(dragX - targetX, 2) + Math.pow(dragY - targetY, 2));
+              if (distance < closestDistance) {
+                closestTarget = target;
+                closestDistance = distance;
+              }
+            });
+          
+            // center the dragged element onto the closest target:
+            if (closestTarget) {
+                closestTarget.innerHTML = "";
+                square.innerHTML = "";
+                p.style.zIndex = "1";
+                presentPiece(closestTarget, piece);
+            }
           }
-        }
+      }
 
 }
 
