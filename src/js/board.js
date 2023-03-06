@@ -44,7 +44,7 @@ function convertFEN(fen) {
     const pieceRows = sectionedFEN[0].split("/");
     console.log(pieceRows);
     let pieceRowsc = [] // converted piece rows
-    pieceRows.forEach(row => {
+    pieceRows.reverse().forEach(row => {
         let rowc = []
         for(let i = 0; i < row.length; i++){
             if(!isNaN(row[i])){
@@ -57,6 +57,7 @@ function convertFEN(fen) {
         }
         pieceRowsc.push(rowc);
     });
+    console.log(pieceRowsc);
     return pieceRowsc;
 }
 
