@@ -83,7 +83,7 @@ function presentPiece(square, piece){
         square.appendChild(pIcon);
     }
 
-    function dragPiece(p) {
+    function dragPiece(p) { // Modified function from https://www.w3schools.com/howto/howto_js_draggable.asp
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         p.onmousedown = dragMouseDown;
 
@@ -145,15 +145,21 @@ function presentPiece(square, piece){
               if (distance < closestDistance) {
                 closestTarget = target;
                 closestDistance = distance;
+                //console.log(closestDistance);
               }
             });
           
             // center the dragged element onto the closest target:
-            if (closestTarget) {
+            if (closestTarget && closestDistance < closestTarget.getBoundingClientRect().width / 2) {
+                console.log(closestDistance, closestTarget.getBoundingClientRect().width / 2);
                 closestTarget.innerHTML = "";
                 square.innerHTML = "";
                 p.style.zIndex = "1";
                 presentPiece(closestTarget, piece);
+            }
+            else{
+                square.innerHTML = "";
+                presentPiece(square, piece);
             }
           }
       }
