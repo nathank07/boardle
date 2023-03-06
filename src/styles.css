@@ -68,6 +68,8 @@ body{
 #board .row>*{
     width: 100%;
     aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
 }
 
 #board .row{

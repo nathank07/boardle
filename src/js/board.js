@@ -1,3 +1,16 @@
+import bk from '../assets/cburnett/bK.svg' //black king
+import wk from '../assets/cburnett/wK.svg' //white king
+import bq from '../assets/cburnett/bQ.svg' //black queen
+import wq from '../assets/cburnett/wQ.svg' //white queen
+import br from '../assets/cburnett/bR.svg' //black rook
+import wr from '../assets/cburnett/wR.svg' //white rook
+import bb from '../assets/cburnett/bB.svg' //black bishop
+import wb from '../assets/cburnett/wB.svg' //white bishop
+import bn from '../assets/cburnett/bN.svg' //black knight
+import wn from '../assets/cburnett/wN.svg' //white knight
+import bp from '../assets/cburnett/bP.svg' //black pawn
+import wp from '../assets/cburnett/wP.svg' //white pawn
+
 
 export default function createBoard(fen){
     const board = document.getElementById('board');
@@ -14,7 +27,7 @@ export default function createBoard(fen){
             darkSquare = !darkSquare;
             col.classList.add('square');
             col.classList.add(`${files[c]}`);
-            col.innerHTML = cfen[r - 1][c]
+            presentPiece(col, cfen[r - 1][c]); 
             row.appendChild(col);
         }
         darkSquare = !darkSquare;
@@ -24,18 +37,6 @@ export default function createBoard(fen){
     //console.log(convertFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
 }
 
-function createArray(){
-    let arr = []
-    const board = document.getElementById('board');
-    board.querySelectorAll('.row').forEach(row => {
-        let squares = []
-        row.querySelectorAll('.square').forEach(square => {
-            squares.push(square.innerHTML);
-        });
-        arr.push(squares);
-    });
-    return arr;
-}
 
 function convertFEN(fen) {
     const sectionedFEN = fen.split(" ");
@@ -59,13 +60,26 @@ function convertFEN(fen) {
     return pieceRowsc;
 }
 
-class Piece {
-    constructor(whiteBool){
-        this.whiteBool = whiteBool
+function presentPiece(square, piece){
+    const pieces = {
+        k: bk,
+        K: wk,
+        q: bq,
+        Q: wq,
+        r: br,
+        R: wr,
+        b: bb,
+        B: wb,
+        n: bn,
+        N: wn,
+        p: bp,
+        P: wp,
     }
-    move(){
-
+    if(piece !== "#") {  
+        const pIcon = new Image();
+        console.log(piece);
+        pIcon.src = pieces[piece]
+        square.appendChild(pIcon);
     }
 }
-
 
