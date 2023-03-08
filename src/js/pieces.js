@@ -22,7 +22,6 @@ export function convertPieces(){
 }
 
 export function presentPiece(square, piece){
-    console.log('a');
     const pieces = {
         k: bk,
         K: wk,
@@ -40,6 +39,7 @@ export function presentPiece(square, piece){
     if(piece !== "#") {  
         const pIcon = new Image();
         pIcon.src = pieces[piece];
+        pIcon.classList.add(piece);
         dragPiece(pIcon);
         square.appendChild(pIcon);
     }
@@ -113,10 +113,13 @@ export function presentPiece(square, piece){
             // center the dragged element onto the closest target:
             if (closestTarget && closestDistance < closestTarget.getBoundingClientRect().width / 2) {
                 console.log(closestDistance, closestTarget.getBoundingClientRect().width / 2);
+                let take = closestTarget.firstChild === null ? "" : "x"
                 closestTarget.innerHTML = "";
                 square.innerHTML = "";
                 p.style.zIndex = "1";
                 presentPiece(closestTarget, piece);
+                console.log(piece, closestTarget);
+                console.log(calculateNotation(piece, closestTarget, take, true, true));
             }
             else{
                 square.innerHTML = "";
@@ -127,3 +130,29 @@ export function presentPiece(square, piece){
 
 }
 
+function calculateNotation(piece, square, take, check, checkmate){
+    const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
+    const rows = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    let file;
+    let row;
+    let last = "";
+    square.classList.forEach(property => {
+        if(files.includes(property)){
+            file = property;
+        }
+    });
+    square.parentElement.classList.forEach(property => {
+        if(rows.includes(property)){
+            row = property
+        }
+    });
+    if(checkmate){
+        last = "#"
+    } else{
+        if(check){
+            last = "+"
+        }
+    }
+    console.log(take.firstChild);
+    return `${piece.toLowerCase() === "p" ? "" : piece.toLowerCase()}${take}${file}${row}${last}`
+}
