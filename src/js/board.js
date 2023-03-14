@@ -1,5 +1,8 @@
 import * as p from './pieces.js'
 
+export let gamestate = [false, false, false, false, false];
+//white | white short castle | white long castle | black short castle | black long castle
+
 export default function createBoard(fen){
     const board = document.getElementById('board');
     document.getElementById('board').innerHTML = ""
@@ -29,9 +32,24 @@ export default function createBoard(fen){
 
 function convertFEN(fen) {
     const sectionedFEN = fen.split(" ");
-    console.log(sectionedFEN);
+    if(sectionedFEN[1] === "w"){
+        gamestate[0] = true;
+    }
+    sectionedFEN[2].split().forEach(char => {
+        if(char === "K"){
+            gamestate[1] = true;
+        }
+        if(char === "Q"){
+            gamestate[2] = true;
+        }
+        if(char === "k"){
+            gamestate[3] = true;
+        }
+        if(char === "q"){
+            gamestate[4] = true;
+        }
+    });
     const pieceRows = sectionedFEN[0].split("/");
-    console.log(pieceRows);
     let pieceRowsc = [] // converted piece rows
     pieceRows.reverse().forEach(row => {
         let rowc = []
@@ -46,7 +64,6 @@ function convertFEN(fen) {
         }
         pieceRowsc.push(rowc);
     });
-    console.log(pieceRowsc);
     return pieceRowsc;
 }
 

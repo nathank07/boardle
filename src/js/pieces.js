@@ -10,6 +10,8 @@ import bn from '../assets/cburnett/bN.svg' //black knight
 import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
+import { gamestate } from './board';
+const isUpperCase = (string) => /^[A-Z]*$/.test(string);
 
 export function presentPiece(square, piece){
     const pieces = {
@@ -108,7 +110,9 @@ export function presentPiece(square, piece){
                 square.innerHTML = "";
                 p.style.zIndex = "1";
                 presentPiece(closestTarget, piece);
-                console.log(isCheck(document.getElementById('board'), true));
+                console.log(isCheck(document.getElementById('board'), !gamestate[0]));
+                console.log(isCheck(document.getElementById('board'), gamestate[0]));
+                gamestate[0] = !gamestate[0];
                 //console.log(piece, closestTarget);
                 //console.log(calculateNotation(piece, closestTarget, take, true, true));
             }
@@ -169,7 +173,7 @@ function getBoardPos(){
     return arr;
 }
 
-function checkLegal(piece, oldSquare, newSquare, take, board) {
+function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
     const files = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8};
     const oldFile = files[notateSquare(oldSquare)[0]];
     const newFile = files[notateSquare(newSquare)[0]];
@@ -178,11 +182,15 @@ function checkLegal(piece, oldSquare, newSquare, take, board) {
     let x = oldRank - 1;
     let y = oldFile - 1;
     const rboard = [...board].reverse();
-    if(take){
-        const isUpperCase = (string) => /^[A-Z]*$/.test(string);
-        const taken = isUpperCase(rboard[newRank - 1][newFile - 1]);
-        const movingPiece = isUpperCase(piece);
-        if(taken === movingPiece){
+    if(!exempt){
+        if(take){
+            const taken = isUpperCase(rboard[newRank - 1][newFile - 1]);
+            const movingPiece = isUpperCase(piece);
+            if(taken === movingPiece){
+                return false;
+            }
+        }
+        if(gamestate[0] !== isUpperCase(piece)){
             return false;
         }
     }
@@ -306,10 +314,10 @@ function checkLegal(piece, oldSquare, newSquare, take, board) {
         }
         break;
       case "q":
-        if(checkLegal(piece === "Q" ? "R" : "r", oldSquare, newSquare, take, board)){
+        if(checkLegal(piece === "Q" ? "R" : "r", oldSquare, newSquare, take, board, true)){
             return true;
         }
-        if(checkLegal(piece === "Q" ? "B" : "b", oldSquare, newSquare, take, board)){
+        if(checkLegal(piece === "Q" ? "B" : "b", oldSquare, newSquare, take, board, true)){
             return true;
         }
         break;
@@ -329,16 +337,16 @@ function checkLegal(piece, oldSquare, newSquare, take, board) {
 }
 
 function isCheck(board, white){
-    const isUpperCase = (string) => /^[A-Z]*$/.test(string)
     const boardArr = getBoardPos();
     const kL = locateKing(white);
     const files = {1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h"};
     const kingSquare = board.querySelector(`._${kL[0]}`).querySelector(`.${files[kL[1]]}`);
+    let check = false;
     board.querySelectorAll('.row').forEach(row => {
         row.querySelectorAll('.square').forEach(square => {
             if(square.firstChild !== null && (isUpperCase(square.firstChild.classList[0]) !== white)){
-                if(checkLegal(square.firstChild.classList[0], square, kingSquare, true, boardArr)){
-                    return true;
+                if(checkLegal(square.firstChild.classList[0], square, kingSquare, true, boardArr, true)){
+                    check = true;
                 }
             }
         });
@@ -355,12 +363,5 @@ function isCheck(board, white){
             }
         }
     }
-    
+    return check;
 }
-  
-  
-  
-  
-  
-  
-  

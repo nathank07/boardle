@@ -1,5 +1,5 @@
 import './styles.css';
-import createBoard, { destroyBoard } from './js/board.js';
+import createBoard from './js/board.js';
 
 
 createBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
