@@ -2,13 +2,14 @@ import * as p from './pieces.js'
 
 export default function createBoard(fen){
     const board = document.getElementById('board');
+    document.getElementById('board').innerHTML = ""
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const cfen = convertFEN(fen);
     let darkSquare = false;
     for(let r = 8; r > 0; r--){
         let row = document.createElement('div');
         row.classList.add('row');
-        row.classList.add(`${r}`);
+        row.classList.add(`_${r}`);
         for(let c = 0; c < 8; c++){
             let col = document.createElement('div');
             if(darkSquare) { col.classList.add('darkSquare') }

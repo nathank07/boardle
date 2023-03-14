@@ -108,6 +108,7 @@ export function presentPiece(square, piece){
                 square.innerHTML = "";
                 p.style.zIndex = "1";
                 presentPiece(closestTarget, piece);
+                console.log(isCheck(document.getElementById('board'), true));
                 //console.log(piece, closestTarget);
                 //console.log(calculateNotation(piece, closestTarget, take, true, true));
             }
@@ -135,7 +136,7 @@ function calculateNotation(piece, square, take, check, checkmate){
 
 function notateSquare(square){
     const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
-    const rows = ["1", "2", "3", "4", "5", "6", "7", "8"];
+    const rows = ["_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8"];
     let file;
     let row;
     square.classList.forEach(property => {
@@ -145,7 +146,7 @@ function notateSquare(square){
     });
     square.parentElement.classList.forEach(property => {
         if(rows.includes(property)){
-            row = property
+            row = property[1];
         }
     });
     return `${file}${row}`;
@@ -169,16 +170,16 @@ function getBoardPos(){
 }
 
 function checkLegal(piece, oldSquare, newSquare, take, board) {
-    let files = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8};
-    let oldFile = files[notateSquare(oldSquare)[0]];
-    let newFile = files[notateSquare(newSquare)[0]];
-    let oldRank = Number(notateSquare(oldSquare)[1]);
-    let newRank = Number(notateSquare(newSquare)[1]);
+    const files = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8};
+    const oldFile = files[notateSquare(oldSquare)[0]];
+    const newFile = files[notateSquare(newSquare)[0]];
+    const oldRank = Number(notateSquare(oldSquare)[1]);
+    const newRank = Number(notateSquare(newSquare)[1]);
     let x = oldRank - 1;
     let y = oldFile - 1;
     const rboard = [...board].reverse();
     if(take){
-        const isUpperCase = (string) => /^[A-Z]*$/.test(string)
+        const isUpperCase = (string) => /^[A-Z]*$/.test(string);
         const taken = isUpperCase(rboard[newRank - 1][newFile - 1]);
         const movingPiece = isUpperCase(piece);
         if(taken === movingPiece){
@@ -187,8 +188,8 @@ function checkLegal(piece, oldSquare, newSquare, take, board) {
     }
     switch (piece.toLowerCase()) {
       case "p":
-        let direction = (piece === "P") ? 1 : -1; 
-        let startingSquare = (piece === "P") ? 2 : 7;
+        const direction = (piece === "P") ? 1 : -1; 
+        const startingSquare = (piece === "P") ? 2 : 7;
         if(take){
             if(newRank - oldRank === direction && (newFile === oldFile + 1 || newFile === oldFile - 1)){
                 return true;
@@ -325,8 +326,37 @@ function checkLegal(piece, oldSquare, newSquare, take, board) {
     }
     
     return false;
-  }
-  
+}
+
+function isCheck(board, white){
+    const isUpperCase = (string) => /^[A-Z]*$/.test(string)
+    const boardArr = getBoardPos();
+    const kL = locateKing(white);
+    const files = {1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h"};
+    const kingSquare = board.querySelector(`._${kL[0]}`).querySelector(`.${files[kL[1]]}`);
+    board.querySelectorAll('.row').forEach(row => {
+        row.querySelectorAll('.square').forEach(square => {
+            if(square.firstChild !== null && (isUpperCase(square.firstChild.classList[0]) !== white)){
+                if(checkLegal(square.firstChild.classList[0], square, kingSquare, true, boardArr)){
+                    return true;
+                }
+            }
+        });
+    });
+
+    function locateKing(white) {
+        const rboardArr = [...boardArr].reverse();
+        const king = white ? "K" : "k";
+        for (let i = 0; i < rboardArr.length; i++) {
+            for (let j = 0; j < rboardArr.length; j++) {
+                if(king === rboardArr[i][j]) {
+                    return [i + 1, j + 1];
+                }
+            }
+        }
+    }
+    
+}
   
   
   
