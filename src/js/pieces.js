@@ -11,16 +11,6 @@ import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
 
-export function convertPieces(){
-    const board = document.getElementById('board');
-    board.querySelectorAll('.row').forEach(row => {
-        row.querySelectorAll('.square').forEach(square => {
-            
-        });
-    });
-    return arr;
-}
-
 export function presentPiece(square, piece){
     const pieces = {
         k: bk,
@@ -109,21 +99,22 @@ export function presentPiece(square, piece){
                 //console.log(closestDistance);
               }
             });
-          
+            let take = closestTarget.firstChild === null ? false : true
             // center the dragged element onto the closest target:
-            if (closestTarget && closestDistance < closestTarget.getBoundingClientRect().width / 2) {
-                console.log(closestDistance, closestTarget.getBoundingClientRect().width / 2);
-                let take = closestTarget.firstChild === null ? "" : "x"
+            if (closestTarget && closestTarget !== square && closestDistance < closestTarget.getBoundingClientRect().width / 2 && checkLegal(piece, square, closestTarget, take, getBoardPos())) {
+                //console.log(closestDistance, closestTarget.getBoundingClientRect().width / 2);
+                //console.log(checkLegal(piece, square, closestTarget));
                 closestTarget.innerHTML = "";
                 square.innerHTML = "";
                 p.style.zIndex = "1";
                 presentPiece(closestTarget, piece);
-                console.log(piece, closestTarget);
-                console.log(calculateNotation(piece, closestTarget, take, true, true));
+                //console.log(piece, closestTarget);
+                //console.log(calculateNotation(piece, closestTarget, take, true, true));
             }
             else{
                 square.innerHTML = "";
                 presentPiece(square, piece);
+                //console.log("b", pullBoardPos());
             }
           }
       }
@@ -131,11 +122,22 @@ export function presentPiece(square, piece){
 }
 
 function calculateNotation(piece, square, take, check, checkmate){
+    let last = "";
+    if(checkmate){
+        last = "#"
+    } else{
+        if(check){
+            last = "+"
+        }
+    }
+    return `${piece.toLowerCase() === "p" ? "" : piece.toLowerCase()}${take ? "x" : ""}${notateSquare(square)}${last}`
+}
+
+function notateSquare(square){
     const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const rows = ["1", "2", "3", "4", "5", "6", "7", "8"];
     let file;
     let row;
-    let last = "";
     square.classList.forEach(property => {
         if(files.includes(property)){
             file = property;
@@ -146,13 +148,188 @@ function calculateNotation(piece, square, take, check, checkmate){
             row = property
         }
     });
-    if(checkmate){
-        last = "#"
-    } else{
-        if(check){
-            last = "+"
+    return `${file}${row}`;
+}
+
+function getBoardPos(){
+    let arr = []
+    const board = document.getElementById('board');
+    board.querySelectorAll('.row').forEach(row => {
+        let squares = []
+        row.querySelectorAll('.square').forEach(square => {
+            if(square.firstChild === null){
+                squares.push("#");
+            } else{
+                squares.push(square.firstChild.classList[0]);
+            }
+        });
+        arr.push(squares);
+    });
+    return arr;
+}
+
+function checkLegal(piece, oldSquare, newSquare, take, board) {
+    let files = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8};
+    let oldFile = files[notateSquare(oldSquare)[0]];
+    let newFile = files[notateSquare(newSquare)[0]];
+    let oldRank = Number(notateSquare(oldSquare)[1]);
+    let newRank = Number(notateSquare(newSquare)[1]);
+    let x = oldRank - 1;
+    let y = oldFile - 1;
+    const rboard = [...board].reverse();
+    if(take){
+        const isUpperCase = (string) => /^[A-Z]*$/.test(string)
+        const taken = isUpperCase(rboard[newRank - 1][newFile - 1]);
+        const movingPiece = isUpperCase(piece);
+        if(taken === movingPiece){
+            return false;
         }
     }
-    console.log(take.firstChild);
-    return `${piece.toLowerCase() === "p" ? "" : piece.toLowerCase()}${take}${file}${row}${last}`
-}
+    switch (piece.toLowerCase()) {
+      case "p":
+        let direction = (piece === "P") ? 1 : -1; 
+        let startingSquare = (piece === "P") ? 2 : 7;
+        if(oldFile === newFile && newRank - oldRank === direction){
+            return true;
+        }
+        if(oldFile === newFile && oldRank === startingSquare && newRank - oldRank === (direction*2)){
+            if(rboard[x+direction][y] === "#"){
+                return true;
+            }
+        }
+        if(take){
+            if(newRank - oldRank === direction && (newFile === oldFile + 1 || newFile === oldFile - 1)){
+                return true;
+            }
+        }
+        break;
+      case "n":
+        if ((Math.abs(newFile - oldFile) === 2 && Math.abs(newRank - oldRank) === 1) ||
+            (Math.abs(newFile - oldFile) === 1 && Math.abs(newRank - oldRank) === 2)) {
+          return true;
+        }
+        break;
+      case "b":
+        if(newFile > oldFile){
+            if(newRank > oldRank){ //top right
+                for(let i = oldRank + 1; i < newRank; i++){  
+                    x += 1
+                    y += 1
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                if(newRank - 2 === x && newFile - 2 === y){
+                    return true;
+                }
+            }
+            if(newRank < oldRank){ //bottom right
+                for(let i = oldRank - 1; i > newRank; i--){  
+                    x -= 1
+                    y -= -1
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                if(newRank === x && newFile - 2 === y){
+                    return true;
+                }
+            }
+        }
+        if(newFile < oldFile){
+            if(newRank > oldRank){ //top left
+                for(let i = oldRank + 1; i < newRank; i++){  
+                    x -= -1;
+                    y -= 1;
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                if(newRank - 2 === x && newFile === y){
+                    return true;
+                }
+            }
+            if(newRank < oldRank){ //bottom left
+                for(let i = oldRank - 1; i > newRank; i--){  
+                    x += -1;
+                    y += -1;
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                if(newRank === x && newFile === y){
+                    return true;
+                }
+            }
+        }        
+        break;
+      case "r":
+        if(oldRank === newRank){
+            if(oldFile < newFile){ //right
+                for(let i = newFile - 1; i > oldFile; i--){
+                    y += 1
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                return true;
+            } else { //left
+                for(let i = oldFile - 1; i > newFile; i--){
+                    y -= 1
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        if(oldFile === newFile){
+            if(oldRank < newRank){ //up
+                for(let i = newRank - 1; i > oldRank; i--){
+                    x += 1
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                return true;
+            } else { //down
+                for(let i = oldRank - 1; i > newRank; i--){
+                    x -= 1
+                    if(rboard[x][y] !== "#"){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        break;
+      case "q":
+        if(checkLegal(piece === "Q" ? "R" : "r", oldSquare, newSquare, take, board)){
+            return true;
+        }
+        if(checkLegal(piece === "Q" ? "B" : "b", oldSquare, newSquare, take, board)){
+            return true;
+        }
+        break;
+      case "k":
+        if ((Math.abs(newFile - oldFile) === 1 && Math.abs(newRank - oldRank) === 1) ||
+            (Math.abs(newFile - oldFile) === 0 && Math.abs(newRank - oldRank) === 1) || 
+            (Math.abs(newFile - oldFile) === 1 && Math.abs(newRank - oldRank) === 0) ) {
+          return true;
+        }
+        break;
+      default:
+        // Invalid piece type
+        break;
+    }
+    
+    return false;
+  }
+  
+  
+  
+  
+  
+  
+  
+  
