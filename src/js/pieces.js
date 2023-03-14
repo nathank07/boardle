@@ -189,16 +189,17 @@ function checkLegal(piece, oldSquare, newSquare, take, board) {
       case "p":
         let direction = (piece === "P") ? 1 : -1; 
         let startingSquare = (piece === "P") ? 2 : 7;
+        if(take){
+            if(newRank - oldRank === direction && (newFile === oldFile + 1 || newFile === oldFile - 1)){
+                return true;
+            }
+            return false;
+        }
         if(oldFile === newFile && newRank - oldRank === direction){
             return true;
         }
         if(oldFile === newFile && oldRank === startingSquare && newRank - oldRank === (direction*2)){
             if(rboard[x+direction][y] === "#"){
-                return true;
-            }
-        }
-        if(take){
-            if(newRank - oldRank === direction && (newFile === oldFile + 1 || newFile === oldFile - 1)){
                 return true;
             }
         }
