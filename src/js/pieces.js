@@ -101,18 +101,20 @@ export function presentPiece(square, piece){
                 //console.log(closestDistance);
               }
             });
+            const board = document.getElementById('board');
             let take = closestTarget.firstChild === null ? false : true
             // center the dragged element onto the closest target:
             if (closestTarget && closestTarget !== square && closestDistance < closestTarget.getBoundingClientRect().width / 2 && checkLegal(piece, square, closestTarget, take, getBoardPos())) {
-                //console.log(closestDistance, closestTarget.getBoundingClientRect().width / 2);
-                //console.log(checkLegal(piece, square, closestTarget));
                 closestTarget.innerHTML = "";
                 square.innerHTML = "";
                 p.style.zIndex = "1";
                 presentPiece(closestTarget, piece);
-                console.log(isCheck(document.getElementById('board'), !gamestate[0]));
-                console.log(isCheck(document.getElementById('board'), gamestate[0]));
-                gamestate[0] = !gamestate[0];
+                if(illegalPos(board)){
+                    closestTarget.innerHTML = "";
+                    presentPiece(square, piece);
+                } else {
+                    gamestate[0] = !gamestate[0];
+                }
                 //console.log(piece, closestTarget);
                 //console.log(calculateNotation(piece, closestTarget, take, true, true));
             }
@@ -124,6 +126,10 @@ export function presentPiece(square, piece){
           }
       }
 
+}
+
+function illegalPos(board){
+    return isCheck(board, gamestate[0]);
 }
 
 function calculateNotation(piece, square, take, check, checkmate){
