@@ -10,7 +10,8 @@ import bn from '../assets/cburnett/bN.svg' //black knight
 import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
-import { gamestate } from './board';
+import { gamestate } from './board'; 
+//white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
 
 export function presentPiece(square, piece){
@@ -102,7 +103,7 @@ export function presentPiece(square, piece){
             });
             const board = document.getElementById('board');
             let take = closestTarget.firstChild === null ? false : true
-            const overwrittenTarget = closestTarget.innerHTML;
+            const overwrittenTarget = closestTarget.firstChild;
             // center the dragged element onto the closest target:
             if (closestTarget && closestTarget !== square && closestDistance < closestTarget.getBoundingClientRect().width / 2 && checkLegal(piece, square, closestTarget, take, getBoardPos())) {
                 closestTarget.innerHTML = "";
@@ -111,6 +112,9 @@ export function presentPiece(square, piece){
                 presentPiece(closestTarget, piece);
                 if(illegalPos(board)){
                     closestTarget.innerHTML = "";
+                    if(overwrittenTarget !== null){
+                        closestTarget.appendChild(overwrittenTarget);
+                    }
                     presentPiece(square, piece);
                 } else {
                     if(isCheck(board, !gamestate[0])){
@@ -124,7 +128,7 @@ export function presentPiece(square, piece){
             }
             else{
                 square.innerHTML = "";
-                closestTarget = overwrittenTarget;
+                //closestTarget = overwrittenTarget;
                 presentPiece(square, piece);
                 //console.log("b", pullBoardPos());
             }
@@ -285,6 +289,7 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                         return false;
                     }
                 }
+                updateGamestate();
                 return true;
             } else { //left
                 for(let i = oldFile - 1; i > newFile; i--){
@@ -293,6 +298,7 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                         return false;
                     }
                 }
+                updateGamestate();
                 return true;
             }
         }
@@ -304,6 +310,7 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                         return false;
                     }
                 }
+                updateGamestate();
                 return true;
             } else { //down
                 for(let i = oldRank - 1; i > newRank; i--){
@@ -312,7 +319,24 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                         return false;
                     }
                 }
+                updateGamestate();
                 return true;
+            }
+        }
+        function updateGamestate(){
+            if(!exempt){
+                if(oldRank === 1 && oldFile === 1){
+                    gamestate[1] = false;
+                }
+                if(oldRank === 1 && oldFile === 8){
+                    gamestate[2] = false;
+                }
+                if(oldRank === 8 && oldFile === 1){
+                    gamestate[3] = false;
+                }   
+                if(oldRank === 8 && oldFile === 8){
+                    gamestate[4] = false;
+                }
             }
         }
         break;
@@ -328,7 +352,38 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         if ((Math.abs(newFile - oldFile) === 1 && Math.abs(newRank - oldRank) === 1) ||
             (Math.abs(newFile - oldFile) === 0 && Math.abs(newRank - oldRank) === 1) || 
             (Math.abs(newFile - oldFile) === 1 && Math.abs(newRank - oldRank) === 0) ) {
-          return true;
+            if(isUpperCase(piece)){
+                gamestate[1] = false;
+                gamestate[2] = false;
+            } else {
+                gamestate[3] = false;
+                gamestate[4] = false;
+            }
+            return true;
+        }
+        if((newRank === 1 || newRank === 8) && (newFile === 3 || newFile === 7)){
+            if(isUpperCase(piece) && newRank === 1){
+                if(newFile == 3){
+                    if(gamestate[1]){
+                        return checkCastle(true, true);
+                    }
+                } else {
+                    if(gamestate[2]){
+                        return checkCastle(true, false);
+                    }
+                }
+            }
+            if(!isUpperCase(piece) && newRank === 8){
+                if(newFile == 3){
+                    if(gamestate[3]){
+                        return checkCastle(false, true);
+                    }
+                } else {
+                    if(gamestate[4]){
+                        return checkCastle(false, false);
+                    }
+                }
+            }
         }
         break;
       default:
@@ -367,6 +422,75 @@ function isCheck(board, white){
         }
     }
     return check;
+}
+
+function checkCastle(white, long){
+    const board = document.getElementById('board');
+    let boardDivs = [];
+    [...board.querySelectorAll('.row')].reverse().forEach(row => {
+        let rows = []
+        row.querySelectorAll('.square').forEach(square => {
+            rows.push(square);
+        });
+        boardDivs.push(rows);
+    });
+    if(white){
+        if(isCheck(board, white)){
+            return false;
+        }
+        if(long && gamestate[1] && boardDivs[0][1].innerHTML === "" && boardDivs[0][2].innerHTML === ""
+         && boardDivs[0][3].innerHTML === "" && boardDivs[0][0].firstChild.classList[0] === "R"){ //white long castle
+            if(checkValid(boardDivs[0][4], boardDivs[0][3])){
+                if(checkValid(boardDivs[0][4], boardDivs[0][2])){
+                    boardDivs[0][0].innerHTML = "";
+                    presentPiece(boardDivs[0][3], "R");
+                    return true;
+                }
+            }
+        } else if(!long && gamestate[2] && boardDivs[0][5].innerHTML === "" && boardDivs[0][6].innerHTML === ""
+        && boardDivs[0][7].firstChild.classList[0] === "R"){ //white short castle
+            if(checkValid(boardDivs[0][4], boardDivs[0][5])){
+                if(checkValid(boardDivs[0][4], boardDivs[0][6])){
+                    boardDivs[0][7].innerHTML = "";
+                    presentPiece(boardDivs[0][5], "R");
+                    return true;
+                }
+            }
+        }
+    } else {
+        if(isCheck(board, white)) {
+            return false;
+        }
+        if(long && gamestate[3] && boardDivs[7][1].innerHTML === "" && boardDivs[7][2].innerHTML === ""
+        && boardDivs[7][0].firstChild.classList[0] === "r"){ //black long castle
+            if(checkValid(boardDivs[7][4], boardDivs[7][3])){
+                if(checkValid(boardDivs[7][4], boardDivs[7][2])){
+                    boardDivs[7][0].innerHTML = "";
+                    presentPiece(boardDivs[7][3], "r");
+                    return true;
+                }
+            }
+        } else if(!long && gamestate[4] && boardDivs[7][5].innerHTML === "" && boardDivs[7][6].innerHTML === "" &&
+        boardDivs[7][7].firstChild.classList[0] === "r"){ //black short castle
+            if(checkValid(boardDivs[7][4], boardDivs[7][5])){
+                if(checkValid(boardDivs[7][4], boardDivs[7][6])){
+                    boardDivs[7][7].innerHTML = "";
+                    presentPiece(boardDivs[7][5], "r");
+                    return true;
+                }
+            }
+        }
+    }
+
+    function checkValid(oldKingSquare, newKingSquare){
+        oldKingSquare.innerHTML = "";
+        presentPiece(newKingSquare, white ? "K" : "k");
+        let valid = !isCheck(board, white);
+        newKingSquare.innerHTML = "";
+        presentPiece(oldKingSquare, white ? "K" : "k");
+        return valid;
+    }
+    return false;
 }
 
 function isCheckMate(board, white){

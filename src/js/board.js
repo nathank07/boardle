@@ -35,7 +35,7 @@ function convertFEN(fen) {
     if(sectionedFEN[1] === "w"){
         gamestate[0] = true;
     }
-    sectionedFEN[2].split().forEach(char => {
+    sectionedFEN[2].split("").forEach(char => {
         if(char === "K"){
             gamestate[1] = true;
         }
