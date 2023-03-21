@@ -124,9 +124,9 @@ export function presentPiece(square, piece){
                     presentPiece(square, piece);
                 } else {
                     if(isCheck(board, !gamestate[0])){
-                        updateAnswer(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
+                        console.log(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
                     } else {
-                        updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
+                        //updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
 
                     }
                     gamestate[0] = !gamestate[0];
@@ -545,7 +545,7 @@ function isCheckMate(board, white){
     let legalmoves = 0;
     for (let i = 0; i < rboardArr.length; i++) {
         for (let j = 0; j < rboardArr.length; j++) {
-            if(rboardArr[i][j] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E" && (isUpperCase(rboardArr[i][j]) === white)){
+            if(rboardArr[i][j] !== "#" && rboardArr[i][j] !== "e" && rboardArr[i][j] !== "E" && (isUpperCase(rboardArr[i][j]) === white)){
                 switch(rboardArr[i][j].toLowerCase()){
                     case "p":
                         const pdirections = [[1, 0],[2, 0],[-1, 0], [-2, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
@@ -627,6 +627,7 @@ function isCheckMate(board, white){
                             let y = j + dy;
                             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
                                 const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
+                                console.log(take);
                                 if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
