@@ -29,12 +29,17 @@ export function presentPiece(square, piece){
         p: bp,
         P: wp,
     }
-    if(piece !== "#") {  
+    if(piece !== "#" && piece !== "e" && piece !== "E") {  
         const pIcon = new Image();
         pIcon.src = pieces[piece];
         pIcon.classList.add(piece);
         dragPiece(pIcon);
         square.appendChild(pIcon);
+    }
+    if(piece === "e" || piece === "E"){
+        const enPassantSquare = document.createElement('div');
+        enPassantSquare.classList.add(`${piece}`);
+        square.appendChild(enPassantSquare);
     }
 
     function dragPiece(p) { // Modified function from https://www.w3schools.com/howto/howto_js_draggable.asp
@@ -200,6 +205,9 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         if(taken === movingPiece){
             return false;
         }
+        if((newSquare.firstChild.classList[0] === "e" || newSquare.firstChild.classList[0] === "E") && piece.toLowerCase() !== "p"){
+            return false;
+        }
     }
     switch (piece.toLowerCase()) {
       case "p":
@@ -207,6 +215,9 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         const startingSquare = (piece === "P") ? 2 : 7;
         if(take){
             if(newRank - oldRank === direction && (newFile === oldFile + 1 || newFile === oldFile - 1)){
+                if((newSquare.firstChild.classList[0] === "e" || newSquare.firstChild.classList[0] === "E")) {
+                    updateEnPassant([newRank - 1 - direction, newFile - 1], isUpperCase(piece), true)
+                }
                 return true;
             }
             return false;
@@ -216,6 +227,7 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         }
         if(oldFile === newFile && oldRank === startingSquare && newRank - oldRank === (direction*2)){
             if(rboard[x+direction][y] === "#"){
+                updateEnPassant([x+direction, y], isUpperCase(piece), false);
                 return true;
             }
         }
@@ -647,4 +659,29 @@ function isCheckMate(board, white){
         }
     }
     return legalmoves === 0;
+}
+
+function updateEnPassant(square, white, remove){
+    const board = document.getElementById('board');
+    let boardDivs = [];
+    [...board.querySelectorAll('.row')].reverse().forEach(row => {
+        let rows = []
+        row.querySelectorAll('.square').forEach(square => {
+            if(square.innerHTML !== "" && (square.firstChild.classList[0] === "e" || square.firstChild.classList[0] === "E")){
+                square.innerHTML = "";
+            }
+            rows.push(square);
+        });
+        boardDivs.push(rows);
+    });
+    if(square === undefined){
+        return;
+    }
+    if(remove === true){
+        boardDivs[square[0]][square[1]].innerHTML = "";
+    }
+    if(square !== null && remove !== true){
+        console.log(boardDivs[square[0]][square[1]])
+        presentPiece(boardDivs[square[0]][square[1]], white ? "E" : "e");
+    }
 }
