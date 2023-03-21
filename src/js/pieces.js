@@ -127,6 +127,7 @@ export function presentPiece(square, piece){
                         updateAnswer(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
                     } else {
                         updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
+
                     }
                     gamestate[0] = !gamestate[0];
                 }
@@ -219,11 +220,13 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                 if((newSquare.firstChild.classList[0] === "e" || newSquare.firstChild.classList[0] === "E")) {
                     updateEnPassant([newRank - 1 - direction, newFile - 1], isUpperCase(piece), true)
                 }
+                updateEnPassant();
                 return true;
             }
             return false;
         }
         if(oldFile === newFile && newRank - oldRank === direction){
+            updateEnPassant()
             return true;
         }
         if(oldFile === newFile && oldRank === startingSquare && newRank - oldRank === (direction*2)){
@@ -236,7 +239,8 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
       case "n":
         if ((Math.abs(newFile - oldFile) === 2 && Math.abs(newRank - oldRank) === 1) ||
             (Math.abs(newFile - oldFile) === 1 && Math.abs(newRank - oldRank) === 2)) {
-          return true;
+                updateEnPassant();
+                return true;
         }
         break;
       case "b":
@@ -245,11 +249,12 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                 for(let i = oldRank + 1; i < newRank; i++){  
                     x += 1
                     y += 1
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 if(newRank - 2 === x && newFile - 2 === y){
+                    updateEnPassant();
                     return true;
                 }
             }
@@ -257,11 +262,12 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                 for(let i = oldRank - 1; i > newRank; i--){  
                     x -= 1
                     y -= -1
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 if(newRank === x && newFile - 2 === y){
+                    updateEnPassant();
                     return true;
                 }
             }
@@ -271,11 +277,12 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                 for(let i = oldRank + 1; i < newRank; i++){  
                     x -= -1;
                     y -= 1;
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 if(newRank - 2 === x && newFile === y){
+                    updateEnPassant();
                     return true;
                 }
             }
@@ -283,11 +290,12 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                 for(let i = oldRank - 1; i > newRank; i--){  
                     x += -1;
                     y += -1;
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 if(newRank === x && newFile === y){
+                    updateEnPassant();
                     return true;
                 }
             }
@@ -298,20 +306,22 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
             if(oldFile < newFile){ //right
                 for(let i = newFile - 1; i > oldFile; i--){
                     y += 1
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 updateGamestate();
+                updateEnPassant();
                 return true;
             } else { //left
                 for(let i = oldFile - 1; i > newFile; i--){
                     y -= 1
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 updateGamestate();
+                updateEnPassant();
                 return true;
             }
         }
@@ -319,20 +329,22 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
             if(oldRank < newRank){ //up
                 for(let i = newRank - 1; i > oldRank; i--){
                     x += 1
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 updateGamestate();
+                updateEnPassant();
                 return true;
             } else { //down
                 for(let i = oldRank - 1; i > newRank; i--){
                     x -= 1
-                    if(rboard[x][y] !== "#"){
+                    if(rboard[x][y] !== "#" && rboard[x][y] !== "e" && rboard[x][y] !== "E"){
                         return false;
                     }
                 }
                 updateGamestate();
+                updateEnPassant();
                 return true;
             }
         }
@@ -355,9 +367,11 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         break;
       case "q":
         if(checkLegal(piece === "Q" ? "R" : "r", oldSquare, newSquare, take, board, true)){
+            updateEnPassant();
             return true;
         }
         if(checkLegal(piece === "Q" ? "B" : "b", oldSquare, newSquare, take, board, true)){
+            updateEnPassant();
             return true;
         }
         break;
@@ -372,28 +386,39 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
                 gamestate[3] = false;
                 gamestate[4] = false;
             }
+            updateEnPassant();
             return true;
         }
         if((newRank === 1 || newRank === 8) && (newFile === 3 || newFile === 7)){
             if(isUpperCase(piece) && newRank === 1){
                 if(newFile == 3){
                     if(gamestate[1]){
-                        return checkCastle(true, true);
+                        if(checkCastle(true, true)){
+                            updateEnPassant();
+                            return true;
+                        }
                     }
                 } else {
-                    if(gamestate[2]){
-                        return checkCastle(true, false);
+                    if(checkCastle(true, false)){
+                        updateEnPassant();
+                        return true;
                     }
                 }
             }
             if(!isUpperCase(piece) && newRank === 8){
                 if(newFile == 3){
                     if(gamestate[3]){
-                        return checkCastle(false, true);
+                        if(checkCastle(false, true)){
+                            updateEnPassant();
+                            return true;
+                        }
                     }
                 } else {
                     if(gamestate[4]){
-                        return checkCastle(false, false);
+                        if(checkCastle(false, false)){
+                            updateEnPassant();
+                            return true;
+                        }
                     }
                 }
             }
@@ -520,7 +545,7 @@ function isCheckMate(board, white){
     let legalmoves = 0;
     for (let i = 0; i < rboardArr.length; i++) {
         for (let j = 0; j < rboardArr.length; j++) {
-            if(rboardArr[i][j] !== "#" && (isUpperCase(rboardArr[i][j]) === white)){
+            if(rboardArr[i][j] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E" && (isUpperCase(rboardArr[i][j]) === white)){
                 switch(rboardArr[i][j].toLowerCase()){
                     case "p":
                         const pdirections = [[1, 0],[2, 0],[-1, 0], [-2, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
@@ -528,7 +553,7 @@ function isCheckMate(board, white){
                         const x = i + dx;
                         const y = j + dy;
                         if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                            const take = rboardArr[x][y] !== "#";
+                            const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
                             if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                 if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                     //console.log(boardDivs[i][j], boardDivs[x][y])
@@ -544,7 +569,7 @@ function isCheckMate(board, white){
                             let x = i + dx;
                             let y = j + dy;
                             if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#";
+                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
                                 if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
@@ -559,7 +584,7 @@ function isCheckMate(board, white){
                             let x = i + dx;
                             let y = j + dy;
                             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#";
+                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
                                 if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
@@ -580,7 +605,7 @@ function isCheckMate(board, white){
                             let x = i + dx;
                             let y = j + dy;
                             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#";
+                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
                                 if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
@@ -601,7 +626,7 @@ function isCheckMate(board, white){
                             let x = i + dx;
                             let y = j + dy;
                             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#";
+                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
                                 if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
@@ -622,7 +647,7 @@ function isCheckMate(board, white){
                             let x = i + dx;
                             let y = j + dy;
                             if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#";
+                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
                                 if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
