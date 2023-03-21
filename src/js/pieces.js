@@ -11,6 +11,7 @@ import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
 import { gamestate } from './board'; 
+import updateAnswer from './answerboxes.js';
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
 
@@ -123,9 +124,9 @@ export function presentPiece(square, piece){
                     presentPiece(square, piece);
                 } else {
                     if(isCheck(board, !gamestate[0])){
-                        console.log(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
+                        updateAnswer(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
                     } else {
-                        console.log(calculateNotation(piece, closestTarget, take, false, false));
+                        updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
                     }
                     gamestate[0] = !gamestate[0];
                 }
@@ -681,7 +682,7 @@ function updateEnPassant(square, white, remove){
         boardDivs[square[0]][square[1]].innerHTML = "";
     }
     if(square !== null && remove !== true){
-        console.log(boardDivs[square[0]][square[1]])
+        //console.log(boardDivs[square[0]][square[1]])
         presentPiece(boardDivs[square[0]][square[1]], white ? "E" : "e");
     }
 }
