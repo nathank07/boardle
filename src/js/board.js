@@ -2,14 +2,16 @@ import * as p from './pieces.js'
 import updateAnswer from './answerboxes.js';
 
 export let gamestate = [false, false, false, false, false];
-export let pastBoardPos = [[""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
+export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
 export let gamepositions = [];
 export let answer = [];
 //white | white short castle | white long castle | black short castle | black long castle
 
 document.querySelector('.submit').addEventListener('click', flipBoard);
-
+document.querySelector('.back').addEventListener('click', () => {
+    updateBoardHistory(pastBoardPos, true, "");
+});
 export default function createBoard(fen, answer){
     const board = document.getElementById('board');
     document.getElementById('board').innerHTML = ""
@@ -35,13 +37,19 @@ export default function createBoard(fen, answer){
     if(answer !== undefined){
         changeAnswer(answer);
     }
-    if(!gamestate[0]){
+    if(!whiteBoardSide){
         flipBoard();
     }
     //console.log(createArray());
     //console.log(convertFENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
     //console.log(convertBoardtoFEN());
-    pastBoardPos[0] = convertBoardtoFEN();
+    if(pastBoardPos[0][0] === ""){
+        if(!gamestate[0]){
+            whiteBoardSide = false;
+            flipBoard();
+        }
+        pastBoardPos[0][0] = convertBoardtoFEN();
+    }
 }
 
 
@@ -147,12 +155,18 @@ export function flipBoard(){
             square.style.order = a;
         });
     });
-    whiteBoardSide = !whiteBoardSide;
 }
 
 export function updateBoardHistory(pastBoardPos, back, notation){
     if(back){
-
+        for(let i = 5; i>=1; i--){
+            if(pastBoardPos[i][0] !== ""){
+                createBoard(pastBoardPos[i - 1][0]);
+                pastBoardPos[i][0] = "";
+                pastBoardPos[i][1] = "";
+                i = 0;
+            }
+        }
     } else {
         for(let i = 1; i<=5; i++){
             if(pastBoardPos[i][0] === ""){

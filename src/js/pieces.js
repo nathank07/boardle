@@ -645,7 +645,7 @@ function isCheckMate(board, white){
                             let y = j + dy;
                             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
                                 const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                                console.log(take);
+                                //console.log(take);
                                 if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
                                     if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
                                         //console.log(boardDivs[i][j], boardDivs[x][y])
