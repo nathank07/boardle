@@ -17,7 +17,15 @@ export function submit(answers){
     });
     targetRow.classList.remove("unsubmitted");
     for(let i = 0; i<5; i++){
+        if(squares[i].innerHTML !== answers[i]){
+            squares[i].classList.add('gray');
+        } 
+        if(answers.includes(squares[i].innerHTML)){
+            squares[i].classList.remove('gray');
+            squares[i].classList.add('yellow');
+        }
         if(squares[i].innerHTML === answers[i]){
+            squares[i].classList.remove('yellow');
             squares[i].classList.add('green');
         }
     }

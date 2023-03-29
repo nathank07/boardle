@@ -110,5 +110,13 @@ button{
 }
 
 .green{
-    background-color: green;
+    background-color: #6e8c32;
+}
+
+.gray{
+    background-color: #444 /* Jhin */;
+}
+
+.yellow{
+    background-color: rgb(191, 157, 44);
 }

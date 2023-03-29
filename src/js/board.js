@@ -5,7 +5,7 @@ export let gamestate = [false, false, false, false, false];
 export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
 export let gamepositions = [];
-export let answer = ["xe3", "xe3", "nf6", "qg4", "bxg4"];
+export let answer = ["h4+", "kg6", "h5+", "kg5", "f4#"];
 //white | white short castle | white long castle | black short castle | black long castle
 
 document.querySelector('.submit').addEventListener('click', () => {
