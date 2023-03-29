@@ -170,7 +170,7 @@ function notateSquare(square){
     return `${file}${row}`;
 }
 
-function getBoardPos(){
+export function getBoardPos(){
     let arr = []
     const board = document.getElementById('board');
     board.querySelectorAll('.row').forEach(row => {
@@ -392,29 +392,31 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         if((newRank === 1 || newRank === 8) && (newFile === 3 || newFile === 7)){
             if(isUpperCase(piece) && newRank === 1){
                 if(newFile == 3){
-                    if(gamestate[1]){
+                    if(gamestate[2]){
                         if(checkCastle(true, true)){
                             updateEnPassant();
                             return true;
                         }
                     }
                 } else {
-                    if(checkCastle(true, false)){
-                        updateEnPassant();
-                        return true;
+                    if(gamestate[1]){
+                        if(checkCastle(true, false)){
+                            updateEnPassant();
+                            return true;
+                        }
                     }
                 }
             }
             if(!isUpperCase(piece) && newRank === 8){
                 if(newFile == 3){
-                    if(gamestate[3]){
+                    if(gamestate[4]){
                         if(checkCastle(false, true)){
                             updateEnPassant();
                             return true;
                         }
                     }
                 } else {
-                    if(gamestate[4]){
+                    if(gamestate[3]){
                         if(checkCastle(false, false)){
                             updateEnPassant();
                             return true;
@@ -476,7 +478,13 @@ function checkCastle(white, long){
         if(isCheck(board, white)){
             return false;
         }
-        if(long && gamestate[1] && boardDivs[0][1].innerHTML === "" && boardDivs[0][2].innerHTML === ""
+        if(long && boardDivs[0][0].firstChild === null){
+            return false;
+        }
+        if(!long && boardDivs[0][7].firstChild === null){
+            return false;
+        }
+        if(long && gamestate[2] && boardDivs[0][1].innerHTML === "" && boardDivs[0][2].innerHTML === ""
          && boardDivs[0][3].innerHTML === "" && boardDivs[0][0].firstChild.classList[0] === "R"){ //white long castle
             if(checkValid(boardDivs[0][4], boardDivs[0][3])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][2])){
@@ -485,7 +493,7 @@ function checkCastle(white, long){
                     return true;
                 }
             }
-        } else if(!long && gamestate[2] && boardDivs[0][5].innerHTML === "" && boardDivs[0][6].innerHTML === ""
+        } else if(!long && gamestate[1] && boardDivs[0][5].innerHTML === "" && boardDivs[0][6].innerHTML === ""
         && boardDivs[0][7].firstChild.classList[0] === "R"){ //white short castle
             if(checkValid(boardDivs[0][4], boardDivs[0][5])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][6])){
@@ -499,7 +507,13 @@ function checkCastle(white, long){
         if(isCheck(board, white)) {
             return false;
         }
-        if(long && gamestate[3] && boardDivs[7][1].innerHTML === "" && boardDivs[7][2].innerHTML === ""
+        if(long && boardDivs[7][7].firstChild === null){
+            return false;
+        }
+        if(!long && boardDivs[7][0].firstChild === null){
+            return false;
+        }
+        if(long && gamestate[4] && boardDivs[7][1].innerHTML === "" && boardDivs[7][2].innerHTML === ""
         && boardDivs[7][0].firstChild.classList[0] === "r"){ //black long castle
             if(checkValid(boardDivs[7][4], boardDivs[7][3])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][2])){
@@ -508,7 +522,7 @@ function checkCastle(white, long){
                     return true;
                 }
             }
-        } else if(!long && gamestate[4] && boardDivs[7][5].innerHTML === "" && boardDivs[7][6].innerHTML === "" &&
+        } else if(!long && gamestate[3] && boardDivs[7][5].innerHTML === "" && boardDivs[7][6].innerHTML === "" &&
         boardDivs[7][7].firstChild.classList[0] === "r"){ //black short castle
             if(checkValid(boardDivs[7][4], boardDivs[7][5])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][6])){

@@ -12,7 +12,7 @@ export default function createBoard(fen, answer){
     const board = document.getElementById('board');
     document.getElementById('board').innerHTML = ""
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    const cfen = convertFEN(fen);
+    const cfen = convertFENtoBoard(fen);
     let darkSquare = false;
     for(let r = 8; r > 0; r--){
         let row = document.createElement('div');
@@ -37,16 +37,19 @@ export default function createBoard(fen, answer){
         flipBoard();
     }
     //console.log(createArray());
-    //console.log(convertFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
+    //console.log(convertFENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
+    console.log(convertBoardtoFEN());
 }
 
 
-function convertFEN(fen) {
+function convertFENtoBoard(fen) {
+    gamestate = [false, false, false, false, false];
     const sectionedFEN = fen.split(" ");
     if(sectionedFEN[1] === "w"){
         gamestate[0] = true;
     }
     sectionedFEN[2].split("").forEach(char => {
+        console.log(char);
         if(char === "K"){
             gamestate[1] = true;
         }
@@ -82,8 +85,31 @@ function changeAnswer(answer){
     let answers = answer.split(" ");
 }
 
-function convertBoard(board){
-
+function convertBoardtoFEN(){
+    let boardArr = p.getBoardPos();
+    let posStr = "";
+    boardArr.forEach(row => {
+        let posRow = "";
+        let count = 0;
+        row.forEach(square => {
+            if(square === "#"){
+                count += 1;
+            } else {
+                if(count !== 0){
+                    posRow += `${count}${square}`;
+                    count = 0;
+                } else {
+                    posRow += square;
+                }
+            }
+        });
+        if(count !== 0){
+            posStr += `${posRow}${count}/`
+        } else {
+            posStr += `${posRow}/`
+        }
+    });
+    return `${posStr.slice(0, -1)} ${gamestate[0] ? "w" : "b"} ${gamestate[2] ? "Q" : ""}${gamestate[1] ? "K" : ""}${gamestate[4] ? "q" : ""}${gamestate[3] ? "k" : ""}`;
 }
 
 export function flipBoard(){
