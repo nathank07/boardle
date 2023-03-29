@@ -1,24 +1,11 @@
-const rows = document.querySelectorAll('.answRow');
+const targetRow = document.querySelector('.unsubmitted');
 
-export default function updateAnswer(notation, answer){
-    let answRows = []
-    rows.forEach(row => {
-        let answRow = [];
-        let empty = false;
-        row.querySelectorAll('.square').forEach(box => {
-            if(box.innerHTML === ""){
-                empty = true;
-            }
-            answRow.push(box);
-        });
-        if(empty){
-            answRows.push(answRow)
-        }
+export default function updateAnswer(pastBoardPos){
+    const squares = [];
+    targetRow.querySelectorAll('.square').forEach(square => {
+        squares.push(square);
     });
-    for(let i = 0; i<5; i++){
-        if(answRows[0][i].innerHTML === ""){
-            answRows[0][i].innerHTML = notation;
-            i = 5;
-        }
+    for(let i = 1; i<=5; i++){
+        squares[i - 1].innerHTML = pastBoardPos[i][1];
     }
 }

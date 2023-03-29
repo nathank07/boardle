@@ -1,6 +1,8 @@
 import * as p from './pieces.js'
+import updateAnswer from './answerboxes.js';
 
 export let gamestate = [false, false, false, false, false];
+export let pastBoardPos = [[""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
 export let gamepositions = [];
 export let answer = [];
@@ -38,7 +40,8 @@ export default function createBoard(fen, answer){
     }
     //console.log(createArray());
     //console.log(convertFENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
-    console.log(convertBoardtoFEN());
+    //console.log(convertBoardtoFEN());
+    pastBoardPos[0] = convertBoardtoFEN();
 }
 
 
@@ -86,7 +89,6 @@ function convertFENtoBoard(fen) {
             pieceRowsc[2][file] = "E";
         }
     }
-    console.log(pieceRowsc);
     return pieceRowsc;
 }
 
@@ -121,7 +123,7 @@ function convertBoardtoFEN(){
         }
     });
     posStr = posStr.slice(0, -1);
-    return `${posStr} ${moveStr} ${castlingStr ? castlingStr : "-"}`;
+    return `${posStr} ${moveStr} ${castlingStr ? castlingStr : "-"} -`;
 }
 
 export function flipBoard(){
@@ -148,4 +150,18 @@ export function flipBoard(){
     whiteBoardSide = !whiteBoardSide;
 }
 
+export function updateBoardHistory(pastBoardPos, back, notation){
+    if(back){
+
+    } else {
+        for(let i = 1; i<=5; i++){
+            if(pastBoardPos[i][0] === ""){
+                pastBoardPos[i][0] = convertBoardtoFEN();
+                pastBoardPos[i][1] = notation;
+                i = 5;
+            }
+        }
+    }
+    updateAnswer(pastBoardPos);
+}
 

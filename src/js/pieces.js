@@ -10,7 +10,7 @@ import bn from '../assets/cburnett/bN.svg' //black knight
 import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
-import { gamestate, flipBoard, whiteBoardSide } from './board'; 
+import { gamestate, pastBoardPos, updateBoardHistory } from './board'; 
 import updateAnswer from './answerboxes.js';
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
@@ -38,7 +38,6 @@ export function presentPiece(square, piece){
         square.appendChild(pIcon);
     }
     if(piece === "e" || piece === "E"){
-        console.log(square);
         const enPassantSquare = document.createElement('div');
         enPassantSquare.classList.add(`${piece}`);
         square.appendChild(enPassantSquare);
@@ -113,26 +112,30 @@ export function presentPiece(square, piece){
             const overwrittenTarget = closestTarget.firstChild;
             // center the dragged element onto the closest target:
             if (closestTarget && closestTarget !== square && closestDistance < closestTarget.getBoundingClientRect().width / 2 && checkLegal(piece, square, closestTarget, take, getBoardPos())) {
-                closestTarget.innerHTML = "";
-                square.innerHTML = "";
-                p.style.zIndex = "1";
-                presentPiece(closestTarget, piece);
-                if(illegalPos(board)){
+                if(pastBoardPos[5][0] === ""){
                     closestTarget.innerHTML = "";
-                    if(overwrittenTarget !== null){
-                        closestTarget.appendChild(overwrittenTarget);
-                    }
-                    presentPiece(square, piece);
-                } else {
-                    if(isCheck(board, !gamestate[0])){
-                        updateAnswer(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
+                    square.innerHTML = "";
+                    p.style.zIndex = "1";
+                    presentPiece(closestTarget, piece);
+                    if(illegalPos(board)){
+                        closestTarget.innerHTML = "";
+                        if(overwrittenTarget !== null){
+                            closestTarget.appendChild(overwrittenTarget);
+                        }
+                        presentPiece(square, piece);
                     } else {
-                        updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
-
+                        if(isCheck(board, !gamestate[0])){
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
+                        } else {
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, false, false));
+                        }
+                        gamestate[0] = !gamestate[0];
                     }
-                    gamestate[0] = !gamestate[0];
+                    //console.log(piece, closestTarget);
+                } else {
+                    square.innerHTML = "";
+                    presentPiece(square, piece);
                 }
-                //console.log(piece, closestTarget);
             }
             else{
                 square.innerHTML = "";
