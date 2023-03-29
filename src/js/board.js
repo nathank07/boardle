@@ -1,14 +1,20 @@
 import * as p from './pieces.js'
-import updateAnswer from './answerboxes.js';
+import updateAnswer, { submit } from './answerboxes.js';
 
 export let gamestate = [false, false, false, false, false];
 export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
 export let gamepositions = [];
-export let answer = [];
+export let answer = ["xe3", "xe3", "nf6", "qg4", "bxg4"];
 //white | white short castle | white long castle | black short castle | black long castle
 
-document.querySelector('.submit').addEventListener('click', flipBoard);
+document.querySelector('.submit').addEventListener('click', () => {
+    if(pastBoardPos[5][0] !== ""){
+        submit(answer);
+        pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
+        createBoard(pastBoardPos[0][0]);
+    }
+});
 document.querySelector('.back').addEventListener('click', () => {
     updateBoardHistory(pastBoardPos, true, "");
 });
