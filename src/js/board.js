@@ -1,9 +1,14 @@
 import * as p from './pieces.js'
 
 export let gamestate = [false, false, false, false, false];
+export let whiteBoardSide = true;
+export let gamepositions = [];
+export let answer = [];
 //white | white short castle | white long castle | black short castle | black long castle
 
-export default function createBoard(fen){
+document.querySelector('.submit').addEventListener('click', flipBoard);
+
+export default function createBoard(fen, answer){
     const board = document.getElementById('board');
     document.getElementById('board').innerHTML = ""
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -24,6 +29,12 @@ export default function createBoard(fen){
         }
         darkSquare = !darkSquare;
         board.appendChild(row);
+    }
+    if(answer !== undefined){
+        changeAnswer(answer);
+    }
+    if(!gamestate[0]){
+        flipBoard();
     }
     //console.log(createArray());
     //console.log(convertFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
@@ -67,5 +78,36 @@ function convertFEN(fen) {
     return pieceRowsc;
 }
 
+function changeAnswer(answer){
+    let answers = answer.split(" ");
+}
+
+function convertBoard(board){
+
+}
+
+export function flipBoard(){
+    let i;
+    if(document.getElementById('board').firstChild.style.order !== ""){
+        if(document.getElementById('board').firstChild.style.order === "-1"){
+            i = 1;
+        } else {
+            i = -1;
+        }
+    } else{
+        i = -1;
+    }
+    let j = 0;
+    document.getElementById('board').querySelectorAll('.row').forEach(row => {
+        let a = 0;
+        j += i;
+        row.style.order = j;
+        row.querySelectorAll('.square').forEach(square => {
+            a += i;
+            square.style.order = a;
+        });
+    });
+    whiteBoardSide = !whiteBoardSide;
+}
 
 

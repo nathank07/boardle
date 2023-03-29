@@ -10,7 +10,7 @@ import bn from '../assets/cburnett/bN.svg' //black knight
 import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
-import { gamestate } from './board'; 
+import { gamestate, flipBoard, whiteBoardSide } from './board'; 
 import updateAnswer from './answerboxes.js';
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
@@ -124,9 +124,9 @@ export function presentPiece(square, piece){
                     presentPiece(square, piece);
                 } else {
                     if(isCheck(board, !gamestate[0])){
-                        console.log(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
+                        updateAnswer(calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
                     } else {
-                        //updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
+                        updateAnswer(calculateNotation(piece, closestTarget, take, false, false));
 
                     }
                     gamestate[0] = !gamestate[0];

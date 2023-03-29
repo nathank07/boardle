@@ -1,15 +1,23 @@
 const rows = document.querySelectorAll('.answRow');
 
-export default function updateAnswer(notation){
-    let answRow = []
+export default function updateAnswer(notation, answer){
+    let answRows = []
     rows.forEach(row => {
+        let answRow = [];
+        let empty = false;
         row.querySelectorAll('.square').forEach(box => {
-            answRow.push(box)
-        });  
+            if(box.innerHTML === ""){
+                empty = true;
+            }
+            answRow.push(box);
+        });
+        if(empty){
+            answRows.push(answRow)
+        }
     });
     for(let i = 0; i<5; i++){
-        if(answRow[i].innerHTML === ""){
-            answRow[i].innerHTML = notation;
+        if(answRows[0][i].innerHTML === ""){
+            answRows[0][i].innerHTML = notation;
             i = 5;
         }
     }
