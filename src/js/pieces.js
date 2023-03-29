@@ -124,12 +124,12 @@ export function presentPiece(square, piece){
                         }
                         presentPiece(square, piece);
                     } else {
-                        if(isCheck(board, !gamestate[0])){
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, true, isCheckMate(board, !gamestate[0])));
+                        gamestate[0] = !gamestate[0];
+                        if(isCheck(board, gamestate[0])){
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, true, isCheckMate(board, gamestate[0])));
                         } else {
                             updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, false, false));
                         }
-                        gamestate[0] = !gamestate[0];
                     }
                     //console.log(piece, closestTarget);
                 } else {
