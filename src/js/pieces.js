@@ -38,6 +38,7 @@ export function presentPiece(square, piece){
         square.appendChild(pIcon);
     }
     if(piece === "e" || piece === "E"){
+        console.log(square);
         const enPassantSquare = document.createElement('div');
         enPassantSquare.classList.add(`${piece}`);
         square.appendChild(enPassantSquare);

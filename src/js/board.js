@@ -49,7 +49,6 @@ function convertFENtoBoard(fen) {
         gamestate[0] = true;
     }
     sectionedFEN[2].split("").forEach(char => {
-        console.log(char);
         if(char === "K"){
             gamestate[1] = true;
         }
@@ -78,6 +77,16 @@ function convertFENtoBoard(fen) {
         }
         pieceRowsc.push(rowc);
     });
+    if(sectionedFEN[3] !== "-"){
+        const files = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7};
+        const file = files[sectionedFEN[3].split("")[0]];
+        if(sectionedFEN[3].split("")[1] === "6"){
+            pieceRowsc[5][file] = "e";
+        } else {
+            pieceRowsc[2][file] = "E";
+        }
+    }
+    console.log(pieceRowsc);
     return pieceRowsc;
 }
 
@@ -88,6 +97,8 @@ function changeAnswer(answer){
 function convertBoardtoFEN(){
     let boardArr = p.getBoardPos();
     let posStr = "";
+    let moveStr = `${gamestate[0] ? "w" : "b"}`;
+    let castlingStr = `${gamestate[1] ? "K" : ""}${gamestate[2] ? "Q" : ""}${gamestate[3] ? "k" : ""}${gamestate[4] ? "q" : ""}`
     boardArr.forEach(row => {
         let posRow = "";
         let count = 0;
@@ -109,7 +120,8 @@ function convertBoardtoFEN(){
             posStr += `${posRow}/`
         }
     });
-    return `${posStr.slice(0, -1)} ${gamestate[0] ? "w" : "b"} ${gamestate[2] ? "Q" : ""}${gamestate[1] ? "K" : ""}${gamestate[4] ? "q" : ""}${gamestate[3] ? "k" : ""}`;
+    posStr = posStr.slice(0, -1);
+    return `${posStr} ${moveStr} ${castlingStr ? castlingStr : "-"}`;
 }
 
 export function flipBoard(){
