@@ -141,3 +141,8 @@ body{
 .prompt>button>img{
     width: 100%;
 }
+
+.prompt>button:hover{
+    background-color: rgba(0,0,0,0.2);
+    cursor: pointer;
+}
