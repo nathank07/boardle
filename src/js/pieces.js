@@ -11,7 +11,7 @@ import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
 import { gamestate, pastBoardPos, updateBoardHistory } from './board'; 
-import updateAnswer from './answerboxes.js';
+
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
 
@@ -81,7 +81,7 @@ export function presentPiece(square, piece){
             p.style.zIndex = "2";
         }
         
-        function closeDragElement() {
+        function closeDragElement(promotion) {
             // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;
@@ -116,19 +116,30 @@ export function presentPiece(square, piece){
                     closestTarget.innerHTML = "";
                     square.innerHTML = "";
                     p.style.zIndex = "1";
-                    presentPiece(closestTarget, piece);
-                    if(illegalPos(board)){
-                        closestTarget.innerHTML = "";
-                        if(overwrittenTarget !== null){
-                            closestTarget.appendChild(overwrittenTarget);
-                        }
-                        presentPiece(square, piece);
+                    if(checkPromotionSquare(closestTarget, piece)){
+                        (async () => {
+                            const newPiece = await promotionPrompt(closestTarget, gamestate[0]);
+                            presentPiece(closestTarget, newPiece);
+                            update();
+                        })();
                     } else {
-                        gamestate[0] = !gamestate[0];
-                        if(isCheck(board, gamestate[0])){
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, true, isCheckMate(board, gamestate[0])));
+                        presentPiece(closestTarget, piece);
+                        update();
+                    }
+                    function update(){
+                        if(illegalPos(board)){
+                            closestTarget.innerHTML = "";
+                            if(overwrittenTarget !== null){
+                                closestTarget.appendChild(overwrittenTarget);
+                            }
+                            presentPiece(square, piece);
                         } else {
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, false, false));
+                            gamestate[0] = !gamestate[0];
+                            if(isCheck(board, gamestate[0])){
+                                updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, true, isCheckMate(board, gamestate[0])));
+                            } else {
+                                updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, false, false));
+                            }
                         }
                     }
                     //console.log(piece, closestTarget);
@@ -730,3 +741,68 @@ function updateEnPassant(square, white, remove){
         presentPiece(boardDivs[square[0]][square[1]], white ? "E" : "e");
     }
 }
+
+function checkPromotionSquare(square, piece){
+    const board = document.getElementById('board');
+    if(piece !== "p" && piece !== "P"){
+        return false;
+    } else {
+        if(piece === "p"){
+            if(square.parentElement.classList.contains("_1")){
+                return true;
+            }
+            return false;
+        }
+        if(piece === "P"){
+            if(square.parentElement.classList.contains("_8")){
+                return true;
+            }
+            return false;
+        }
+    }
+}
+
+function promotionPrompt(square, white) {
+    return new Promise(resolve => {
+      const prompt = document.createElement('div');
+      prompt.classList.add('prompt');
+      const queen = document.createElement('button');
+      const queenImg = new Image();
+      queenImg.src = white ? wq : bq;
+      queen.appendChild(queenImg);
+      queen.addEventListener('click', () => {
+        prompt.remove();
+        resolve(white ? 'Q' : 'q');
+      });
+      const rook = document.createElement('button');
+      const rookImg = new Image();
+      rookImg.src = white ? wr : br;
+      rook.appendChild(rookImg);
+      rook.addEventListener('click', () => {
+        prompt.remove();
+        resolve(white ? 'R' : 'r');
+      });
+      const bishop = document.createElement('button');
+      const bishopImg = new Image();
+      bishopImg.src = white ? wb : bb;
+      bishop.appendChild(bishopImg);
+      bishop.addEventListener('click', () => {
+        prompt.remove();
+        resolve(white ? 'B' : 'b');
+      });
+      const knight = document.createElement('button');
+      const knightImg = new Image();
+      knightImg.src = white ? wn : bn;
+      knight.appendChild(knightImg);
+      knight.addEventListener('click', () => {
+        prompt.remove();
+        resolve(white ? 'N' : 'n');
+      });
+      prompt.appendChild(queen);
+      prompt.appendChild(rook);
+      prompt.appendChild(bishop);
+      prompt.appendChild(knight);
+      square.appendChild(prompt);
+    });
+  }
+  
