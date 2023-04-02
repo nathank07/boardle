@@ -171,6 +171,8 @@ export function updateBoardHistory(pastBoardPos, back, notation){
                 pastBoardPos[i][0] = "";
                 pastBoardPos[i][1] = "";
                 i = 0;
+            } else {
+                createBoard(pastBoardPos[0][0]);
             }
         }
     } else {

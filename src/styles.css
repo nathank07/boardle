@@ -60,6 +60,7 @@ body{
     aspect-ratio: 1 / 1;
     background-color: #F0D9B5;
     margin: 1rem;
+    position: relative;
 }
 
 #board .darkSquare{
@@ -121,13 +122,14 @@ body{
     background-color: rgb(191, 157, 44);
 }
 
-.prompt{
+#board .row>* .prompt{
     width: 100%;
     height: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     max-width: 100%;
     max-height: 100%;
+    z-index: 3;
 }
 
 .prompt>button{
@@ -137,6 +139,15 @@ body{
     padding: 0px;
 }
 
+.overlay{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: rgba(0,0,0,0.1);
+}
 
 .prompt>button>img{
     width: 100%;

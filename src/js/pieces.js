@@ -764,45 +764,52 @@ function checkPromotionSquare(square, piece){
 
 function promotionPrompt(square, white) {
     return new Promise(resolve => {
-      const prompt = document.createElement('div');
-      prompt.classList.add('prompt');
-      const queen = document.createElement('button');
-      const queenImg = new Image();
-      queenImg.src = white ? wq : bq;
-      queen.appendChild(queenImg);
-      queen.addEventListener('click', () => {
-        prompt.remove();
-        resolve(white ? 'Q' : 'q');
-      });
-      const rook = document.createElement('button');
-      const rookImg = new Image();
-      rookImg.src = white ? wr : br;
-      rook.appendChild(rookImg);
-      rook.addEventListener('click', () => {
-        prompt.remove();
-        resolve(white ? 'R' : 'r');
-      });
-      const bishop = document.createElement('button');
-      const bishopImg = new Image();
-      bishopImg.src = white ? wb : bb;
-      bishop.appendChild(bishopImg);
-      bishop.addEventListener('click', () => {
-        prompt.remove();
-        resolve(white ? 'B' : 'b');
-      });
-      const knight = document.createElement('button');
-      const knightImg = new Image();
-      knightImg.src = white ? wn : bn;
-      knight.appendChild(knightImg);
-      knight.addEventListener('click', () => {
-        prompt.remove();
-        resolve(white ? 'N' : 'n');
-      });
-      prompt.appendChild(queen);
-      prompt.appendChild(rook);
-      prompt.appendChild(bishop);
-      prompt.appendChild(knight);
-      square.appendChild(prompt);
+        const prompt = document.createElement('div');
+        prompt.classList.add('prompt');
+        const overlay = document.createElement('div');
+        overlay.classList.add('overlay');
+        document.getElementById('board').appendChild(overlay);
+        const queen = document.createElement('button');
+        const queenImg = new Image();
+        queenImg.src = white ? wq : bq;
+        queen.appendChild(queenImg);
+        queen.addEventListener('click', () => {
+            prompt.remove();
+            overlay.remove();
+            resolve(white ? 'Q' : 'q');
+        });
+        const rook = document.createElement('button');
+        const rookImg = new Image();
+        rookImg.src = white ? wr : br;
+        rook.appendChild(rookImg);
+        rook.addEventListener('click', () => {
+            prompt.remove();
+            overlay.remove();
+            resolve(white ? 'R' : 'r');
+        });
+        const bishop = document.createElement('button');
+        const bishopImg = new Image();
+        bishopImg.src = white ? wb : bb;
+        bishop.appendChild(bishopImg);
+        bishop.addEventListener('click', () => {
+            prompt.remove();
+            overlay.remove();
+            resolve(white ? 'B' : 'b');
+        });
+        const knight = document.createElement('button');
+        const knightImg = new Image();
+        knightImg.src = white ? wn : bn;
+        knight.appendChild(knightImg);
+        knight.addEventListener('click', () => {
+            prompt.remove();
+            overlay.remove();
+            resolve(white ? 'N' : 'n');
+        });
+        prompt.appendChild(queen);
+        prompt.appendChild(rook);
+        prompt.appendChild(bishop);
+        prompt.appendChild(knight);
+        square.appendChild(prompt);
     });
   }
   
