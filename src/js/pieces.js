@@ -81,7 +81,7 @@ export function presentPiece(square, piece){
             p.style.zIndex = "2";
         }
         
-        function closeDragElement(promotion) {
+        function closeDragElement() {
             // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;
@@ -107,56 +107,62 @@ export function presentPiece(square, piece){
                 closestDistance = distance;
               }
             });
-            const board = document.getElementById('board');
-            let take = closestTarget.firstChild === null ? false : true
-            const overwrittenTarget = closestTarget.firstChild;
-            // center the dragged element onto the closest target:
-            if (closestTarget && closestTarget !== square && closestDistance < closestTarget.getBoundingClientRect().width / 2 && checkLegal(piece, square, closestTarget, take, getBoardPos())) {
-                if(pastBoardPos[5][0] === ""){
-                    closestTarget.innerHTML = "";
-                    square.innerHTML = "";
-                    p.style.zIndex = "1";
-                    if(checkPromotionSquare(closestTarget, piece)){
-                        (async () => {
-                            const newPiece = await promotionPrompt(closestTarget, gamestate[0]);
-                            presentPiece(closestTarget, newPiece);
-                            update();
-                        })();
-                    } else {
-                        presentPiece(closestTarget, piece);
-                        update();
-                    }
-                    function update(){
-                        if(illegalPos(board)){
-                            closestTarget.innerHTML = "";
-                            if(overwrittenTarget !== null){
-                                closestTarget.appendChild(overwrittenTarget);
-                            }
-                            presentPiece(square, piece);
-                        } else {
-                            gamestate[0] = !gamestate[0];
-                            if(isCheck(board, gamestate[0])){
-                                updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, true, isCheckMate(board, gamestate[0])));
-                            } else {
-                                updateBoardHistory(pastBoardPos, false, calculateNotation(piece, closestTarget, take, false, false));
-                            }
-                        }
-                    }
-                    //console.log(piece, closestTarget);
-                } else {
-                    square.innerHTML = "";
-                    presentPiece(square, piece);
-                }
-            }
-            else{
+            if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
+                movePiece(square, closestTarget);
+                p.style.zIndex = "1";
+            } else {
                 square.innerHTML = "";
-                //closestTarget = overwrittenTarget;
                 presentPiece(square, piece);
-                //console.log("b", pullBoardPos());
             }
           }
       }
 
+}
+
+function movePiece(oldSquare, newSquare){
+    const board = document.getElementById('board');
+    const piece = oldSquare.firstChild.classList[0];
+    const take = newSquare.firstChild === null ? false : true
+    const overwrittenTarget = newSquare.firstChild;
+    if (newSquare && newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
+        if(pastBoardPos[5][0] === ""){
+            newSquare.innerHTML = "";
+            oldSquare.innerHTML = "";
+            if(checkPromotionSquare(newSquare, piece)){
+                (async () => {
+                    const newPiece = await promotionPrompt(newSquare, gamestate[0]);
+                    presentPiece(newSquare, newPiece);
+                    update();
+                })();
+            } else {
+                presentPiece(newSquare, piece);
+                update();
+            }
+            function update(){
+                if(illegalPos(board)){
+                    newSquare.innerHTML = "";
+                    if(overwrittenTarget !== null){
+                        newSquare.appendChild(overwrittenTarget);
+                    }
+                    presentPiece(oldSquare, piece);
+                } else {
+                    gamestate[0] = !gamestate[0];
+                    if(isCheck(board, gamestate[0])){
+                        updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, true, isCheckMate(board, gamestate[0])));
+                    } else {
+                        updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, false, false));
+                    }
+                }
+            }
+        } else {
+            oldSquare.innerHTML = "";
+            presentPiece(oldSquare, piece);
+        }
+    }
+    else {
+        oldSquare.innerHTML = "";
+        presentPiece(oldSquare, piece);
+    }
 }
 
 function illegalPos(board){
@@ -743,23 +749,11 @@ function updateEnPassant(square, white, remove){
 }
 
 function checkPromotionSquare(square, piece){
-    const board = document.getElementById('board');
-    if(piece !== "p" && piece !== "P"){
-        return false;
-    } else {
-        if(piece === "p"){
-            if(square.parentElement.classList.contains("_1")){
-                return true;
-            }
-            return false;
-        }
-        if(piece === "P"){
-            if(square.parentElement.classList.contains("_8")){
-                return true;
-            }
-            return false;
-        }
+    if((piece === "p" && square.parentElement.classList.contains("_1")) ||
+       (piece === "P" && square.parentElement.classList.contains("_8"))){
+        return true;
     }
+    return false;
 }
 
 function promotionPrompt(square, white) {
