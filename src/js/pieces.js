@@ -116,24 +116,28 @@ export function presentPiece(square, piece){
             }
           }
       }
-
 }
 
-function movePiece(oldSquare, newSquare){
+export function movePiece(oldSquare, newSquare, promotion){
     const board = document.getElementById('board');
     const piece = oldSquare.firstChild.classList[0];
     const take = newSquare.firstChild === null ? false : true
     const overwrittenTarget = newSquare.firstChild;
-    if (newSquare && newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
+    if(newSquare && newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
         if(pastBoardPos[5][0] === ""){
             newSquare.innerHTML = "";
             oldSquare.innerHTML = "";
             if(checkPromotionSquare(newSquare, piece)){
-                (async () => {
-                    const newPiece = await promotionPrompt(newSquare, gamestate[0]);
-                    presentPiece(newSquare, newPiece);
+                if(promotion !== undefined){
+                    presentPiece(newSquare, gamestate[0] ? promotion.toUpperCase() : promotion);
                     update();
-                })();
+                } else {
+                    (async () => {
+                        const newPiece = await promotionPrompt(newSquare, gamestate[0]);
+                        presentPiece(newSquare, newPiece);
+                        update();
+                    })();
+                }
             } else {
                 presentPiece(newSquare, piece);
                 update();
@@ -189,6 +193,12 @@ function notateSquare(square){
         }
     });
     return `${file}${row}`;
+}
+
+export function notationToSquare(notation){
+    const sectionedNotation = notation.split("");
+    const rows = {"1" : "_1", "2" : "_2", "3" : "_3", "4" : "_4", "5" : "_5", "6" : "_6", "7" : "_7", "8" : "_8"};
+    return document.querySelector(`.${rows[sectionedNotation[1]]} .${sectionedNotation[0]}`);
 }
 
 export function getBoardPos(){

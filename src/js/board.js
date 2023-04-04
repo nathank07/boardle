@@ -4,13 +4,12 @@ import updateAnswer, { submit } from './answerboxes.js';
 export let gamestate = [false, false, false, false, false];
 export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
-export let gamepositions = [];
-export let answer = ["h4+", "kg6", "h5+", "kg5", "f4#"];
+export let answerBoxes = [];
 //white | white short castle | white long castle | black short castle | black long castle
 
 document.querySelector('.submit').addEventListener('click', () => {
     if(pastBoardPos[5][0] !== ""){
-        submit(answer);
+        submit(answerBoxes);
         pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
         createBoard(pastBoardPos[0][0]);
     }
@@ -40,9 +39,6 @@ export default function createBoard(fen, answer){
         darkSquare = !darkSquare;
         board.appendChild(row);
     }
-    if(answer !== undefined){
-        changeAnswer(answer);
-    }
     if(!whiteBoardSide){
         flipBoard();
     }
@@ -55,6 +51,9 @@ export default function createBoard(fen, answer){
             flipBoard();
         }
         pastBoardPos[0][0] = convertBoardtoFEN();
+    }
+    if(answer !== undefined){
+        convertAnswer(answer);
     }
 }
 
@@ -106,8 +105,20 @@ function convertFENtoBoard(fen) {
     return pieceRowsc;
 }
 
-function changeAnswer(answer){
+function convertAnswer(answer){
     let answers = answer.split(" ");
+    answers.forEach(answer => {
+        const oldSquare = p.notationToSquare(answer.substring(0,2));
+        const newSquare = p.notationToSquare(answer.substring(2, 4));
+        const promotion = answer.substring(4);
+        p.movePiece(oldSquare, newSquare, promotion);
+    });
+    document.querySelector('.answRow').querySelectorAll('.square').forEach(square => {
+        answerBoxes.push(square.innerHTML);
+    });
+    for(let i = 0; i<=5; i++){
+        updateBoardHistory(pastBoardPos, true, "");
+    }
 }
 
 function convertBoardtoFEN(){
