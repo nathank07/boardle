@@ -2,10 +2,11 @@ from flask import Flask
 from flask_restful import Api, Resource, abort
 import random
 import pandas as pd
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 def returnRandomRow():
     with open('filtered_puzzles.csv', 'r') as f:

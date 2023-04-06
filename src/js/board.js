@@ -107,17 +107,27 @@ function convertFENtoBoard(fen) {
 
 function convertAnswer(answer){
     let answers = answer.split(" ");
-    answers.forEach(answer => {
-        const oldSquare = p.notationToSquare(answer.substring(0,2));
-        const newSquare = p.notationToSquare(answer.substring(2, 4));
-        const promotion = answer.substring(4);
-        p.movePiece(oldSquare, newSquare, promotion);
-    });
+    for(let i = 0; i < answers.length; i++){
+        const oldSquare = p.notationToSquare(answers[i].substring(0,2));
+        const newSquare = p.notationToSquare(answers[i].substring(2, 4));
+        const promotion = answers[i].substring(4);
+        if(answers.length - i <= 5){
+            p.movePiece(oldSquare, newSquare, promotion, true);
+        } else {
+            p.movePiece(oldSquare, newSquare, promotion, false);
+            pastBoardPos[0][0] = convertBoardtoFEN();
+        }
+    }
     document.querySelector('.answRow').querySelectorAll('.square').forEach(square => {
         answerBoxes.push(square.innerHTML);
     });
     for(let i = 0; i<=5; i++){
         updateBoardHistory(pastBoardPos, true, "");
+        if(gamestate[0]){
+            whiteBoardSide = true;
+        } else {
+            whiteBoardSide = false;
+        }
     }
 }
 
@@ -197,4 +207,3 @@ export function updateBoardHistory(pastBoardPos, back, notation){
     }
     updateAnswer(pastBoardPos);
 }
-

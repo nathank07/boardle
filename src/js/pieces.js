@@ -108,7 +108,7 @@ export function presentPiece(square, piece){
               }
             });
             if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
-                movePiece(square, closestTarget);
+                movePiece(square, closestTarget, "", true);
                 p.style.zIndex = "1";
             } else {
                 square.innerHTML = "";
@@ -118,7 +118,7 @@ export function presentPiece(square, piece){
       }
 }
 
-export function movePiece(oldSquare, newSquare, promotion){
+export function movePiece(oldSquare, newSquare, promotion, annotate){
     const board = document.getElementById('board');
     const piece = oldSquare.firstChild.classList[0];
     const take = newSquare.firstChild === null ? false : true
@@ -128,7 +128,7 @@ export function movePiece(oldSquare, newSquare, promotion){
             newSquare.innerHTML = "";
             oldSquare.innerHTML = "";
             if(checkPromotionSquare(newSquare, piece)){
-                if(promotion !== undefined){
+                if(promotion !== ""){
                     presentPiece(newSquare, gamestate[0] ? promotion.toUpperCase() : promotion);
                     update();
                 } else {
@@ -151,10 +151,12 @@ export function movePiece(oldSquare, newSquare, promotion){
                     presentPiece(oldSquare, piece);
                 } else {
                     gamestate[0] = !gamestate[0];
-                    if(isCheck(board, gamestate[0])){
-                        updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, true, isCheckMate(board, gamestate[0])));
-                    } else {
-                        updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, false, false));
+                    if(annotate){
+                        if(isCheck(board, gamestate[0])){
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, true, isCheckMate(board, gamestate[0])));
+                        } else {
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, false, false));
+                        }
                     }
                 }
             }
