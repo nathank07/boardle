@@ -10,7 +10,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
         title: "Boardle",
-        template: 'src/index.html'
+        template: 'src/index2.html'
     })
   ],
   module: {

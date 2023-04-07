@@ -1,10 +1,14 @@
 import * as p from './pieces.js'
-import updateAnswer, { submit } from './answerboxes.js';
+import updateAnswer, { submit, clearAnswers } from './answerboxes.js';
+import getRandomPuzzle, { getID, getPuzzleByRating } from './fetch.js';
 
 export let gamestate = [false, false, false, false, false];
 export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
 export let answerBoxes = [];
+let side = true;
+import bk from '../assets/cburnett/bK.svg' //black pawn
+import wk from '../assets/cburnett/wK.svg' //white pawn
 //white | white short castle | white long castle | black short castle | black long castle
 
 document.querySelector('.submit').addEventListener('click', () => {
@@ -16,6 +20,20 @@ document.querySelector('.submit').addEventListener('click', () => {
 });
 document.querySelector('.back').addEventListener('click', () => {
     updateBoardHistory(pastBoardPos, true, "");
+});
+document.querySelector('.flip').addEventListener('click', (flipBoard));
+document.querySelector('.search').addEventListener('click', () =>{
+    side = true;
+    getID(document.querySelector('input').value);
+})
+document.querySelector('.random').addEventListener('click', () => {
+    side = true;
+    getRandomPuzzle();
+})
+document.querySelectorAll('.rating button').forEach(button => {
+    button.addEventListener('click', ()=>{
+        getPuzzleByRating(button.textContent);
+    })
 });
 export default function createBoard(fen, answer){
     const board = document.getElementById('board');
@@ -42,9 +60,6 @@ export default function createBoard(fen, answer){
     if(!whiteBoardSide){
         flipBoard();
     }
-    //console.log(createArray());
-    //console.log(convertFENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"))
-    //console.log(convertBoardtoFEN());
     if(pastBoardPos[0][0] === ""){
         if(!gamestate[0]){
             whiteBoardSide = false;
@@ -53,6 +68,7 @@ export default function createBoard(fen, answer){
         pastBoardPos[0][0] = convertBoardtoFEN();
     }
     if(answer !== undefined){
+        pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
         convertAnswer(answer);
     }
 }
@@ -106,6 +122,7 @@ function convertFENtoBoard(fen) {
 }
 
 function convertAnswer(answer){
+    answerBoxes = [];
     let answers = answer.split(" ");
     for(let i = 0; i < answers.length; i++){
         const oldSquare = p.notationToSquare(answers[i].substring(0,2));
@@ -128,6 +145,7 @@ function convertAnswer(answer){
         } else {
             whiteBoardSide = false;
         }
+        document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
     }
 }
 
@@ -182,6 +200,8 @@ export function flipBoard(){
             square.style.order = a;
         });
     });
+    side =! side
+    document.querySelector('.boardside').src = side ? wk : bk;
 }
 
 export function updateBoardHistory(pastBoardPos, back, notation){

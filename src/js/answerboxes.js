@@ -30,3 +30,16 @@ export function submit(answers){
         }
     }
 }
+
+export function clearAnswers(){
+    const answerRows = document.querySelectorAll('.answRow');
+    answerRows.forEach(row => {
+        row.classList.add('unsubmitted');
+        row.querySelectorAll('.square').forEach(sq => {
+            sq.innerHTML = "";
+            sq.classList.remove('gray');
+            sq.classList.remove('yellow');
+            sq.classList.remove('green');
+        });
+    });
+}

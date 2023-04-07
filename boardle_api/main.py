@@ -51,6 +51,7 @@ def find_row_by_id(target_id):
 
 class SearchPuzzle(Resource):
     def get(self, id):
+        print(id)
         game = find_row_by_id(id)
         if(game == 404):
             abort(404)
@@ -60,7 +61,7 @@ class SearchPuzzle(Resource):
             "fen": game[0],
             "moves": game[1],
             "rating": f"{game[2]}",
-            "rating deviation": f"{game[3]}",
+            "ratingDeviation": f"{game[3]}",
             "games": game[4]
         }
 
@@ -72,7 +73,7 @@ class RandomPuzzle(Resource):
             "fen": game[1],
             "moves": game[2],
             "rating": game[3],
-            "rating deviation": game[4],
+            "ratingDeviation": game[4],
             "games": game[5]
         }
 
@@ -84,7 +85,7 @@ class SearchByRating(Resource):
             "fen": game[1],
             "moves": game[2],
             "rating": game[3],
-            "rating deviation": game[4],
+            "ratingDeviation": game[4],
             "games": game[5]
         }
 
