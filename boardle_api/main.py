@@ -8,21 +8,6 @@ app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
-def returnRandomRow():
-    with open('filtered_puzzles.csv', 'r') as f:
-        # Get the total number of lines in the file
-        total_lines = sum(1 for line in f)
-        # Generate a random line number between 1 and the total number of lines
-        random_line_number = random.randint(1, total_lines)
-        # Seek to the random line in the file
-        f.seek(0)
-        for i in range(random_line_number - 1):
-            f.readline()
-        # Read the random line and split it by commas
-        random_line = f.readline()
-        random_line_values = random_line.strip().split(',')
-        # Do something with the random line values
-        return random_line_values
 
 def returnRandomRowByRating(rating):
     filename = f'filtered_puzzles_by_number/filtered_puzzles_{rating}.csv'
@@ -42,12 +27,18 @@ def returnRandomRowByRating(rating):
         return random_line_values
 
 def find_row_by_id(target_id):
-    df = pd.read_csv('filtered_puzzles.csv', index_col=0)
-    if target_id in df.index:
-        row = df.loc[target_id].values.tolist()
-        return row
-    else:
-        return 404
+    ratings = range(400, 3200, 100)
+    for rating in ratings:
+        filename = f'filtered_puzzles_by_number/filtered_puzzles_{rating}.csv'
+        try:
+            df = pd.read_csv(filename, index_col=0)
+        except FileNotFoundError:
+            continue
+        if target_id in df.index:
+            row = df.loc[target_id].values.tolist()
+            return row
+    return 404, 404
+
 
 class SearchPuzzle(Resource):
     def get(self, id):
@@ -65,18 +56,6 @@ class SearchPuzzle(Resource):
             "games": game[4]
         }
 
-class RandomPuzzle(Resource):
-    def get(self):
-        game = returnRandomRow()
-        return {
-            "id": game[0],
-            "fen": game[1],
-            "moves": game[2],
-            "rating": game[3],
-            "ratingDeviation": game[4],
-            "games": game[5]
-        }
-
 class SearchByRating(Resource):
     def get(self, rating):
         game = returnRandomRowByRating(rating)
@@ -90,7 +69,6 @@ class SearchByRating(Resource):
         }
 
 
-api.add_resource(RandomPuzzle, "/randompuzzle")
 api.add_resource(SearchPuzzle, "/searchpuzzle/<string:id>")
 api.add_resource(SearchByRating, "/searchbyrating/<int:rating>")
 

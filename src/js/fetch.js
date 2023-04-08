@@ -3,7 +3,8 @@ import { clearAnswers } from './answerboxes.js';
 
 export default async function getRandomPuzzle(){
     try {
-        const response = await fetch('http://127.0.0.1:5000/randompuzzle');
+        const rating = Math.floor(Math.random() * 28 + 4) * 100;
+        const response = await fetch(`http://127.0.0.1:5000/searchbyrating/${rating}`);
         const data = await response.json();
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
@@ -30,7 +31,6 @@ export async function getID(id){
 }
 
 export async function getPuzzleByRating(rating){
-    console.log(rating)
     try {
         const response = await fetch(`http://127.0.0.1:5000/searchbyrating/${rating}`);
         const data = await response.json();

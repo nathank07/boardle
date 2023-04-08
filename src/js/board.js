@@ -23,11 +23,9 @@ document.querySelector('.back').addEventListener('click', () => {
 });
 document.querySelector('.flip').addEventListener('click', (flipBoard));
 document.querySelector('.search').addEventListener('click', () =>{
-    side = true;
     getID(document.querySelector('input').value);
 })
 document.querySelector('.random').addEventListener('click', () => {
-    side = true;
     getRandomPuzzle();
 })
 document.querySelectorAll('.rating button').forEach(button => {
@@ -69,6 +67,7 @@ export default function createBoard(fen, answer){
     }
     if(answer !== undefined){
         pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
+        side = true;
         convertAnswer(answer);
     }
 }
@@ -145,8 +144,9 @@ function convertAnswer(answer){
         } else {
             whiteBoardSide = false;
         }
-        document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
     }
+    document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
+    document.querySelector('.boardside').src = whiteBoardSide ? wk : bk;
 }
 
 function convertBoardtoFEN(){
