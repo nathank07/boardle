@@ -200,7 +200,7 @@ function notateSquare(square){
 export function notationToSquare(notation){
     const sectionedNotation = notation.split("");
     const rows = {"1" : "_1", "2" : "_2", "3" : "_3", "4" : "_4", "5" : "_5", "6" : "_6", "7" : "_7", "8" : "_8"};
-    return document.querySelector(`.${rows[sectionedNotation[1]]} .${sectionedNotation[0]}`);
+    return document.querySelector(`.${rows[sectionedNotation[1]]} .square.${sectionedNotation[0]}`);
 }
 
 export function getBoardPos(){
@@ -595,7 +595,7 @@ function isCheckMate(board, white){
             if(rboardArr[i][j] !== "#" && rboardArr[i][j] !== "e" && rboardArr[i][j] !== "E" && (isUpperCase(rboardArr[i][j]) === white)){
                 switch(rboardArr[i][j].toLowerCase()){
                     case "p":
-                        const pdirections = [[1, 0],[2, 0],[-1, 0], [-2, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
+                        const pdirections = [[2, 0],[1, 0],[-2, 0], [-1, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
                         for (const [dx, dy] of pdirections) {
                         const x = i + dx;
                         const y = j + dy;
