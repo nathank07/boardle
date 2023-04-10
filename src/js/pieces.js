@@ -471,7 +471,7 @@ function isCheck(board, white){
     const boardArr = getBoardPos();
     const kL = locateKing(white);
     const files = {1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f", 7: "g", 8: "h"};
-    const kingSquare = board.querySelector(`._${kL[0]}`).querySelector(`.${files[kL[1]]}`);
+    const kingSquare = board.querySelector(`._${kL[0]}`).querySelector(`.square.${files[kL[1]]}`);
     let check = false;
     board.querySelectorAll('.row').forEach(row => {
         row.querySelectorAll('.square').forEach(square => {
@@ -595,7 +595,7 @@ function isCheckMate(board, white){
             if(rboardArr[i][j] !== "#" && rboardArr[i][j] !== "e" && rboardArr[i][j] !== "E" && (isUpperCase(rboardArr[i][j]) === white)){
                 switch(rboardArr[i][j].toLowerCase()){
                     case "p":
-                        const pdirections = [[2, 0],[1, 0],[-2, 0], [-1, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
+                        const pdirections = [[1, 0],[2, 0],[-1, 0], [-2, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
                         for (const [dx, dy] of pdirections) {
                         const x = i + dx;
                         const y = j + dy;

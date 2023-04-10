@@ -23,6 +23,7 @@ export async function getID(id){
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         console.log(data.moves)
+        console.log(data);
         clearAnswers();
         return createBoard(data.fen, data.moves);
     } catch (error) {
