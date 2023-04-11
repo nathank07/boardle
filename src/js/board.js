@@ -19,8 +19,10 @@ document.querySelector('.submit').addEventListener('click', () => {
     }
 });
 document.querySelector('.back').addEventListener('click', () => {
-    side = !side
     updateBoardHistory(pastBoardPos, true, "");
+    if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
+        flipBoard();
+    }
 });
 document.querySelector('.flip').addEventListener('click', (flipBoard));
 document.querySelector('.search').addEventListener('click', () =>{
@@ -35,13 +37,7 @@ document.querySelectorAll('.rating button').forEach(button => {
     })
 });
 export default function createBoard(fen, answer){
-    let flip = false;
     const board = document.getElementById('board');
-    if(board.querySelector('.row') !== null){
-        if(board.querySelector('.row').style.order < 0){
-            flip = true;
-        }
-    }
     document.getElementById('board').innerHTML = ""
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const cfen = convertFENtoBoard(fen);
@@ -62,23 +58,13 @@ export default function createBoard(fen, answer){
         darkSquare = !darkSquare;
         board.appendChild(row);
     }
-    if(!whiteBoardSide){
-        flipBoard();
-    }
     if(pastBoardPos[0][0] === ""){
-        if(!gamestate[0]){
-            whiteBoardSide = false;
-            flipBoard();
-        }
         pastBoardPos[0][0] = convertBoardtoFEN();
     }
     if(answer !== undefined){
         pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
         convertAnswer(answer);
-    }
-    if(flip){
-        flipBoard()
-    }
+    } 
 }
 
 
@@ -152,6 +138,7 @@ function convertAnswer(answer){
             whiteBoardSide = true;
         } else {
             whiteBoardSide = false;
+            flipBoard()
         }
     }
     document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
