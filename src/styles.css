@@ -217,3 +217,84 @@ body{
     background-color: rgba(0,0,0,0.2);
     cursor:pointer;
 }
+
+.fulloverlay{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.puzzleprompt{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #222;
+    padding: 1.2rem;
+    gap:1rem;
+    padding-bottom: 0rem;
+    border-radius: 12px;
+}
+.answers{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    color: white;
+}
+.answer{
+    width: 5rem;
+    border: #222 solid 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    height: 2rem;
+    background-color: #6e8c32;
+}
+.puzzleprompt .id{
+    font-size: 2rem;
+
+}
+.answerText{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+.footer{
+    padding-top: 1.5rem;
+    padding-bottom: 1.2rem;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.puzzleprompt button{
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    user-select: none;
+    border: 1px transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    background-color: rgb(72, 75, 77);
+
+}
+.puzzleprompt button.share{
+    background-color: rgb(0, 116, 210);
+}
+.puzzleprompt button.engine{
+    background-color: rgb(157, 11, 11);
+}

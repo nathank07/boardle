@@ -1,5 +1,6 @@
 import createBoard from './board.js';
 import { clearAnswers } from './answerboxes.js';
+export let puzzleDetails;
 
 export default async function getRandomPuzzle(){
     try {
@@ -10,6 +11,7 @@ export default async function getRandomPuzzle(){
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         console.log(data.moves)
         clearAnswers();
+        puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
         return createBoard(data.fen, data.moves)
     } catch (error) {
         console.error(error);
@@ -22,9 +24,8 @@ export async function getID(id){
         const data = await response.json();
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
-        console.log(data.moves)
-        console.log(data);
         clearAnswers();
+        puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
         return createBoard(data.fen, data.moves);
     } catch (error) {
         console.error(error);
@@ -40,6 +41,7 @@ export async function getPuzzleByRating(rating){
         console.log(data.moves);
         console.log(data);
         clearAnswers();
+        puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
         return createBoard(data.fen, data.moves);
     } catch (error) {
         console.error(error);
