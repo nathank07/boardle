@@ -75,7 +75,7 @@ function displayWinLoss(win){
     answerText.innerHTML = "Solution:"
 
     let tries = 0;
-
+    let playerString = "";
     document.querySelectorAll('.answRow').forEach(row => {
         if(!row.classList.contains('unsubmitted')){
             const playerAnswers = document.createElement('div');
@@ -85,6 +85,15 @@ function displayWinLoss(win){
                 sq.classList.forEach(divClass => {
                     if(divClass === "gray" || divClass === "yellow" || divClass ==="green"){
                         answSquare.classList.add(divClass);
+                        if(divClass === "gray"){
+                            playerString += "⬛"
+                        }
+                        if(divClass === "yellow"){
+                            playerString += "🟨"
+                        }
+                        if(divClass === "green"){
+                            playerString += "🟩"
+                        }
                     }
                 });
                 answSquare.classList.add('answer');
@@ -93,6 +102,7 @@ function displayWinLoss(win){
             });
             playerAnswer.appendChild(playerAnswers);
             tries += 1
+            playerString += "\n"
         }
     });
 
@@ -128,7 +138,12 @@ function displayWinLoss(win){
     shareButton.classList.add('share');
     shareButton.innerHTML = 'Share';
     shareButton.addEventListener('click', () => {
-        console.log('shared');
+        let text = 
+`NK Boardle #${puzzleDetails[0]} ${tries}/5 ت
+Lichess Elo: ${puzzleDetails[1]}
+\n${playerString}
+${window.location.href}`;
+        navigator.clipboard.writeText(text);
     });
     footer.appendChild(engineButton);
     footer.appendChild(newPuzzle);

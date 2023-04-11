@@ -144,6 +144,7 @@ function convertAnswer(answer){
             flipBoard()
         }
     }
+    console.log(answerBoxes);
     document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
     document.querySelector('.boardside').src = whiteBoardSide ? wk : bk;
 }
