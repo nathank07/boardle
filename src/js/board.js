@@ -19,6 +19,7 @@ document.querySelector('.submit').addEventListener('click', () => {
     }
 });
 document.querySelector('.back').addEventListener('click', () => {
+    side = !side
     updateBoardHistory(pastBoardPos, true, "");
 });
 document.querySelector('.flip').addEventListener('click', (flipBoard));
@@ -34,7 +35,13 @@ document.querySelectorAll('.rating button').forEach(button => {
     })
 });
 export default function createBoard(fen, answer){
+    let flip = false;
     const board = document.getElementById('board');
+    if(board.querySelector('.row') !== null){
+        if(board.querySelector('.row').style.order < 0){
+            flip = true;
+        }
+    }
     document.getElementById('board').innerHTML = ""
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const cfen = convertFENtoBoard(fen);
@@ -67,8 +74,10 @@ export default function createBoard(fen, answer){
     }
     if(answer !== undefined){
         pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
-        side = true;
         convertAnswer(answer);
+    }
+    if(flip){
+        flipBoard()
     }
 }
 
@@ -200,7 +209,7 @@ export function flipBoard(){
             square.style.order = a;
         });
     });
-    side =! side
+    side = board.querySelector('.row').style.order > 0
     document.querySelector('.boardside').src = side ? wk : bk;
 }
 
