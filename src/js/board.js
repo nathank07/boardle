@@ -16,6 +16,9 @@ document.querySelector('.submit').addEventListener('click', () => {
         submit(answerBoxes);
         pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
         createBoard(pastBoardPos[0][0]);
+        if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
+            flipBoard();
+        }
     }
 });
 document.querySelector('.back').addEventListener('click', () => {
