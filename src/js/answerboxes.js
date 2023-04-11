@@ -66,7 +66,6 @@ function displayWinLoss(win){
     id.innerHTML = `#${puzzleDetails[0]}`
     const info = document.createElement('p');
     info.classList.add('info');
-    info.innerHTML = `You completed ${puzzleDetails[0]}`;
     const playerAnswer = document.createElement('div');
     playerAnswer.classList.add('playerAnswer');
     const solution = document.createElement('div');
@@ -75,20 +74,30 @@ function displayWinLoss(win){
     answerText.classList.add('answerText');
     answerText.innerHTML = "Solution:"
 
+    let tries = 0;
+
     document.querySelectorAll('.answRow').forEach(row => {
-        if(row.classList.contains('.unsubmitted') === false){
-            console.log('a');
+        if(!row.classList.contains('unsubmitted')){
             const playerAnswers = document.createElement('div');
             playerAnswers.classList.add('answers');
             row.querySelectorAll('.square').forEach(sq => {
                 const answSquare = document.createElement('div');
+                sq.classList.forEach(divClass => {
+                    if(divClass === "gray" || divClass === "yellow" || divClass ==="green"){
+                        answSquare.classList.add(divClass);
+                    }
+                });
                 answSquare.classList.add('answer');
                 answSquare.innerHTML = `${sq.innerHTML}`
                 playerAnswers.appendChild(answSquare)
             });
             playerAnswer.appendChild(playerAnswers);
+            tries += 1
         }
     });
+
+    info.innerHTML = `You completed puzzle <b>#${puzzleDetails[0]}</b> in ${tries} out of 5 tries.`;
+
     const solutionAnswers = document.createElement('div');
     solutionAnswers.classList.add('answers');
     answerBoxes.forEach(box => {
@@ -125,6 +134,12 @@ function displayWinLoss(win){
     footer.appendChild(newPuzzle);
     footer.appendChild(shareButton);
     overlay.appendChild(prompt);
+    overlay.addEventListener('click', () => {
+        overlay.remove();
+    });
+    prompt.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
     prompt.appendChild(id);
     prompt.appendChild(info);
     prompt.appendChild(playerAnswer);

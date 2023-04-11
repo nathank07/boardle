@@ -223,7 +223,7 @@ body{
     align-items: center;
     justify-content: center;
     position: fixed;
-    z-index: 1;
+    z-index: 4;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
     height: 100%;
@@ -237,11 +237,12 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #222;
+    background-color: #151515;
     padding: 1.2rem;
     gap:1rem;
     padding-bottom: 0rem;
     border-radius: 12px;
+    z-index: 5;
 }
 .answers{
     display: grid;
@@ -250,12 +251,14 @@ body{
 }
 .answer{
     width: 5rem;
-    border: #222 solid 1px;
+    border: #151515 solid 2px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     height: 2rem;
+}
+.solution .answer {
     background-color: #6e8c32;
 }
 .puzzleprompt .id{
