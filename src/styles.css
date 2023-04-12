@@ -43,7 +43,7 @@ body{
 .answRow>*{
     width: 100%;
     aspect-ratio: 1 / 1;
-    border: #dcdcdc solid 1px;
+    border: #444 solid 2px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,4 +304,12 @@ body{
 .playerAnswer{
     margin-top: 1rem;
     margin-bottom: -0.5rem;
+}
+
+.unsubmitted .white{
+    background-color: #fff;
+    color: black;
+}
+.unsubmitted .black {
+    color: #fff
 }

@@ -1,5 +1,5 @@
 import getRandomPuzzle, { puzzleDetails } from "./fetch";
-import { answerBoxes } from "./board";
+import { gamestate, answerBoxes } from "./board";
 
 export default function updateAnswer(pastBoardPos){
     const targetRow = document.querySelector('.unsubmitted');
@@ -34,13 +34,17 @@ export function submit(answers){
             green += 1;
         }
     }
-    if(green === 5){
-        displayWinLoss(true)
-    } else {
-        if(document.querySelector('.unsubmitted') === null){
-            displayWinLoss(false);
-        }
+    if(green === 5 || document.querySelector('.unsubmitted') === null){
+        displayWinLoss(green === 5)
     }
+}
+
+export function colorRow(row){
+    let toggle = gamestate[0];
+    row.querySelectorAll('.square').forEach(square => {
+        square.classList.add(toggle ? 'white' : 'black');
+        toggle = !toggle;
+    });
 }
 
 export function clearAnswers(){
@@ -52,6 +56,8 @@ export function clearAnswers(){
             sq.classList.remove('gray');
             sq.classList.remove('yellow');
             sq.classList.remove('green');
+            sq.classList.remove('black');
+            sq.classList.remove('white');
         });
     });
 }

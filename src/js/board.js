@@ -1,5 +1,5 @@
 import * as p from './pieces.js'
-import updateAnswer, { submit, clearAnswers } from './answerboxes.js';
+import updateAnswer, { submit, colorRow } from './answerboxes.js';
 import getRandomPuzzle, { getID, getPuzzleByRating } from './fetch.js';
 
 export let gamestate = [false, false, false, false, false];
@@ -16,6 +16,7 @@ document.querySelector('.submit').addEventListener('click', () => {
         submit(answerBoxes);
         pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
         createBoard(pastBoardPos[0][0]);
+        colorRow(document.querySelector('.unsubmitted'));
         if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
             flipBoard();
         }
@@ -147,6 +148,7 @@ function convertAnswer(answer){
     console.log(answerBoxes);
     document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
     document.querySelector('.boardside').src = whiteBoardSide ? wk : bk;
+    colorRow(document.querySelector('.unsubmitted'));
 }
 
 function convertBoardtoFEN(){
