@@ -120,6 +120,7 @@ export function presentPiece(square, piece){
 
 export function movePiece(oldSquare, newSquare, promotion, annotate){
     const board = document.getElementById('board');
+    const oldBoard = [board.cloneNode(true), getBoardPos()];
     const piece = oldSquare.firstChild.classList[0];
     const take = newSquare.firstChild === null ? false : true
     const overwrittenTarget = newSquare.firstChild;
@@ -153,9 +154,9 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
                     gamestate[0] = !gamestate[0];
                     if(annotate){
                         if(isCheck(board, gamestate[0])){
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, true, isCheckMate(board, gamestate[0])));
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, true, isCheckMate(board, gamestate[0]), oldBoard));
                         } else {
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, newSquare, take, false, false));
+                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, false, false, oldBoard));
                         }
                     }
                 }
@@ -175,8 +176,93 @@ function illegalPos(board){
     return isCheck(board, gamestate[0]);
 }
 
-function calculateNotation(piece, square, take, check, checkmate){
-    return `${piece.toLowerCase() === "p" ? "" : piece.toLowerCase()}${take ? "x" : ""}${notateSquare(square)}${checkmate ? "#" : check ? "+" : ""}`
+function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, oldBoard){
+    let nL = notateSquare(newSquare);
+    let promotion = ""
+    switch(piece.toLowerCase()){
+        case "p":
+            if(nL[1] === "1" || nL[1] === "8"){
+                promotion = `=${newSquare.firstChild.classList[0]}`
+            }
+            if(take){
+                piece = notateSquare(oldSquare).split('')[0];
+            } else {
+                piece = "";
+            }
+            break;
+        case "k":
+            const kL = notateSquare(oldSquare);
+            if(kL === "e1"){
+                if(nL === "c1"){
+                    piece = "O-O-O";
+                    nL = "";
+                }
+                if(nL === "g1"){
+                    piece = "O-O";
+                    nL = "";
+                }
+            }
+            if(kL === "e8"){
+                if(nL === "c8"){
+                    piece = "O-O-O";
+                    nL = "";
+                }
+                if(nL === "g8"){
+                    piece = "O-O";
+                    nL = "";
+                }
+            }
+            break;
+        default:
+            let notateFileRank = checkOtherPieces(piece, oldBoard, newSquare, take);
+            let newPiece = `${piece}`;
+            if(notateFileRank[0] && !notateFileRank[1]){ //if file needs to be notated
+                newPiece = piece += notateSquare(oldSquare).split("")[0]; 
+            }
+            if(notateFileRank[1] && !notateFileRank[0]){//if rank needs to be notated
+                newPiece = piece += notateSquare(oldSquare).split("")[1];
+            }
+            if(notateFileRank[0] && notateFileRank[1]){//if both need to be notated
+                newPiece = piece += notateSquare(oldSquare);
+            }
+            piece = newPiece;
+            break;
+
+    }
+    return `${piece}${take ? "x" : ""}${nL}${promotion}${checkmate ? "#" : check ? "+" : ""}`
+}
+
+function checkOtherPieces(piece, board, targetedSquare, take){ //checks if other pieces can take and what needs to be 
+    let squares = board[0].querySelectorAll('.square');        //notated if so (returns fileboolean and rankboolean)
+    let pieces = [];
+    squares.forEach(square => {
+        if(square.firstElementChild !== null && square.firstElementChild.classList.contains(piece)){
+            pieces.push(square);
+        }
+    });
+    let samePieces = [];
+    pieces.forEach(div => {
+        if(checkLegal(piece, div, targetedSquare, take, board[1], true)){
+            samePieces.push(div);
+        }
+    });
+    let files = new Set();
+    let ranks = new Set();
+    samePieces.forEach(piece => {
+        let definedFiles = ["a", "b", "c", "d", "e", "f", "g", "h"];
+        let definedRanks = ["_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8"]
+        definedFiles.forEach(file => {
+            if(piece.classList.contains(file)){
+                files.add(file);
+            }
+        });
+        definedRanks.forEach(rank => {
+            if(piece.parentElement.classList.contains(rank)){
+                ranks.add(rank)
+            }
+        });
+    });
+    return [files.size > 1, ranks.size > 1];
 }
 
 function notateSquare(square){
