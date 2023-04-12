@@ -301,3 +301,7 @@ body{
 .puzzleprompt button.engine{
     background-color: rgb(157, 11, 11);
 }
+.playerAnswer{
+    margin-top: 1rem;
+    margin-bottom: -0.5rem;
+}

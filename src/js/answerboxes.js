@@ -157,8 +157,8 @@ ${window.location.href}`;
     });
     prompt.appendChild(id);
     prompt.appendChild(info);
-    prompt.appendChild(playerAnswer);
     prompt.appendChild(solution);
+    prompt.appendChild(playerAnswer);
     prompt.appendChild(footer);
     document.body.appendChild(overlay)
 }
