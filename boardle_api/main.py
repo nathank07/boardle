@@ -31,7 +31,7 @@ def find_row_by_id(target_id):
     for rating in ratings:
         filename = f'filtered_puzzles_by_number/filtered_puzzles_{rating}.csv'
         try:
-            df = pd.read_csv(filename, index_col=0)
+            df = pd.read_csv(filename, index_col=0, header=None)
         except FileNotFoundError:
             continue
         if target_id in df.index:
