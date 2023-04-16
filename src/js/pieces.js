@@ -49,26 +49,26 @@ export function presentPiece(square, piece){
         p.onmousedown = dragMouseDown;
         function dragMouseDown(e) {
             if(gamestate[0] === isUpperCase(p.classList[0])){
-                p.style.pointerEvents = 'auto';
-                e = e || window.event;
-                e.preventDefault();
-                // get the mouse cursor position at startup:
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                // get the offset between the element and its parent container:
-                let rect = p.getBoundingClientRect();
-                let offsetX = rect.left - p.offsetLeft;
-                let offsetY = rect.top - p.offsetTop;
-                // set the initial position of the element to the center of the cursor:
-                let centerX = p.offsetWidth / 2;
-                let centerY = p.offsetHeight / 2;
-                p.style.left = (pos3 - centerX - offsetX) + "px";
-                p.style.top = (pos4 - centerY - offsetY) + "px";
-                document.onmouseup = closeDragElement;
-                // call a function whenever the cursor moves:
-                document.onmousemove = elementDrag;
-            } else {
-                p.style.pointerEvents = 'none';
+                if(event.button === 0){
+                    p.style.pointerEvents = 'auto';
+                    e = e || window.event;
+                    e.preventDefault();
+                    // get the mouse cursor position at startup:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // get the offset between the element and its parent container:
+                    let rect = p.getBoundingClientRect();
+                    let offsetX = rect.left - p.offsetLeft;
+                    let offsetY = rect.top - p.offsetTop;
+                    // set the initial position of the element to the center of the cursor:
+                    let centerX = p.offsetWidth / 2;
+                    let centerY = p.offsetHeight / 2;
+                    p.style.left = (pos3 - centerX - offsetX) + "px";
+                    p.style.top = (pos4 - centerY - offsetY) + "px";
+                    document.onmouseup = closeDragElement;
+                    // call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
             }
         }
         
@@ -83,7 +83,7 @@ export function presentPiece(square, piece){
             // set the element's new position:
             p.style.top = (p.offsetTop - pos2) + "px";
             p.style.left = (p.offsetLeft - pos1) + "px";
-            p.style.zIndex = "2";
+            p.style.zIndex = "3";
         }
         
         function closeDragElement() {
@@ -175,6 +175,9 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
         removePiece(oldSquare);
         presentPiece(oldSquare, piece);
     }
+    document.querySelectorAll('.selected').forEach(square => {
+        square.classList.remove('selected');
+    });
 }
 
 function illegalPos(board){
@@ -617,7 +620,7 @@ function checkCastle(white, long){
                     return true;
                 }
             }
-        } else if(!long && gamestate[1] && !boardDivs[0][5].hasChildNodes() && !boardDivs[0][6].hasChildNodes() === ""
+        } else if(!long && gamestate[1] && !boardDivs[0][5].hasChildNodes() && !boardDivs[0][6].hasChildNodes()
         && boardDivs[0][7].firstElementChild.classList[0] === "R"){ //white short castle
             if(checkValid(boardDivs[0][4], boardDivs[0][5])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][6])){
@@ -637,7 +640,7 @@ function checkCastle(white, long){
         if(!long && boardDivs[7][0].firstElementChild === null){
             return false;
         }
-        if(long && gamestate[4] && !boardDivs[7][1].hasChildNodes() === "" && !boardDivs[7][2].hasChildNodes() === ""
+        if(long && gamestate[4] && !boardDivs[7][1].hasChildNodes() === "" && !boardDivs[7][2].hasChildNodes()
         && boardDivs[7][0].firstElementChild.classList[0] === "r"){ //black long castle
             if(checkValid(boardDivs[7][4], boardDivs[7][3])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][2])){
@@ -646,7 +649,7 @@ function checkCastle(white, long){
                     return true;
                 }
             }
-        } else if(!long && gamestate[3] && !boardDivs[7][5].hasChildNodes() === "" && !boardDivs[7][6].hasChildNodes() === "" &&
+        } else if(!long && gamestate[3] && !boardDivs[7][5].hasChildNodes() === "" && !boardDivs[7][6].hasChildNodes() &&
         boardDivs[7][7].firstElementChild.classList[0] === "r"){ //black short castle
             if(checkValid(boardDivs[7][4], boardDivs[7][5])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][6])){

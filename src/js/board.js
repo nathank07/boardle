@@ -46,6 +46,7 @@ document.querySelectorAll('.rating button').forEach(button => {
 });
 export default function createBoard(fen, answer){
     const board = document.getElementById('board');
+    board.addEventListener('contextmenu', event => event.preventDefault());
     document.getElementById('board').innerHTML = ""
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const cfen = convertFENtoBoard(fen);
@@ -60,6 +61,7 @@ export default function createBoard(fen, answer){
             darkSquare = !darkSquare;
             col.classList.add('square');
             col.classList.add(`${files[c]}`);
+            col.addEventListener('mousedown', colorSquare);
             p.presentPiece(col, cfen[r - 1][c]); 
             row.appendChild(col);
         }
@@ -270,4 +272,17 @@ function annotateBoard() {
         }
     });
 }
-  
+
+function colorSquare(square){
+    if(event.button === 2){
+        let targetSquare = square.target;
+        if(targetSquare.tagName === "IMG"){
+            targetSquare = targetSquare.parentElement;
+        }
+        if(targetSquare.classList.contains('selected')){
+            targetSquare.classList.remove('selected');
+        } else {
+            targetSquare.classList.add('selected');
+        }
+    }
+}

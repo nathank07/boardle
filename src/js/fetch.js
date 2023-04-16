@@ -25,6 +25,7 @@ export async function getID(id){
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         clearAnswers();
         puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
+        console.log(data);
         return createBoard(data.fen, data.moves);
     } catch (error) {
         console.error(error);
