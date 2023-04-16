@@ -83,14 +83,17 @@ export function presentPiece(square, piece){
             // set the element's new position:
             p.style.top = (p.offsetTop - pos2) + "px";
             p.style.left = (p.offsetLeft - pos1) + "px";
-            p.style.zIndex = "3";
+            square.zIndex = "3";
+            p.parentElement.style.zIndex = "3";
         }
         
         function closeDragElement() {
             // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;
-          
+            square.style.zIndex = 'auto';
+            console.log(square);
+            p.style.zIndex = "2";
             // find all potential target elements:
             let targets = document.querySelectorAll('#board .square');
           
@@ -114,7 +117,6 @@ export function presentPiece(square, piece){
             });
             if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
                 movePiece(square, closestTarget, "", true);
-                p.style.zIndex = "1";
             } else {
                 removePiece(square);
                 presentPiece(square, piece);
