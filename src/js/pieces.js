@@ -921,10 +921,10 @@ function removePiece(square){
     }
 }
 
-function highlightKing(white){
-    console.log('function called');
-    document.querySelector(`img.k`).parentElement.classList.remove('inCheck');
-    document.querySelector(`img.K`).parentElement.classList.remove('inCheck');
+export function highlightKing(white){
+    if(document.querySelector('.inCheck')){
+        document.querySelector('.inCheck').classList.remove('inCheck');
+    }
     if(isCheck(document.querySelector('#board'), white)){
         document.querySelector(`img.${white ? "K" : "k"}`).parentElement.classList.add('inCheck');
     }

@@ -27,6 +27,7 @@ document.querySelector('.submit').addEventListener('click', () => {
 document.querySelector('.back').addEventListener('click', () => {
     if(document.querySelector('.unsubmitted') !== null){
         updateBoardHistory(pastBoardPos, true, "");
+        p.highlightKing(gamestate[0]);
         if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
             flipBoard();
         }
