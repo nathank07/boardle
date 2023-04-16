@@ -331,13 +331,14 @@ body{
 .bottomAnnotation {
 	position: absolute;
 	bottom: 0;
-	display: grid;
+	display: grid; /* Use flexbox layout */
+	flex-direction: row-reverse; /* Reverse the order of child elements */
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	width: 100%;
 	padding-bottom: 4px;
 	z-index: 1;
-    direction: rtl;
-    pointer-events: none;
+	direction: rtl; /* Set direction to right-to-left */
+	pointer-events: none;
 }
 
 .bottomAnnotation > *{

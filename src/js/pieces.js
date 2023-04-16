@@ -92,7 +92,6 @@ export function presentPiece(square, piece){
             document.onmouseup = null;
             document.onmousemove = null;
             square.style.zIndex = 'auto';
-            console.log(square);
             p.style.zIndex = "2";
             // find all potential target elements:
             let targets = document.querySelectorAll('#board .square');

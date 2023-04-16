@@ -250,7 +250,7 @@ function annotateBoard() {
     }
     const row = document.querySelector('#board').querySelector('.row');
     let files = ["a","b","c","d","e","f","g","h"];
-    if(row.style.order > 0){
+    if(row.style.order > 0 || row.style.order === ""){
         files.reverse();
     }
     const bottomAnnotations = document.createElement('div');
