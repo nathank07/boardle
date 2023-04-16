@@ -165,6 +165,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
                         }
                     }
                 }
+                highlightKing(gamestate[0]);
             }
         } else {
             removePiece(oldSquare);
@@ -178,6 +179,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
     document.querySelectorAll('.selected').forEach(square => {
         square.classList.remove('selected');
     });
+    highlightKing(gamestate[0]);
 }
 
 function illegalPos(board){
@@ -916,5 +918,14 @@ function promotionPrompt(square, white) {
 function removePiece(square){
     while (square.lastChild) {
         square.removeChild(square.lastChild);
+    }
+}
+
+function highlightKing(white){
+    console.log('function called');
+    document.querySelector(`img.k`).parentElement.classList.remove('inCheck');
+    document.querySelector(`img.K`).parentElement.classList.remove('inCheck');
+    if(isCheck(document.querySelector('#board'), white)){
+        document.querySelector(`img.${white ? "K" : "k"}`).parentElement.classList.add('inCheck');
     }
 }
