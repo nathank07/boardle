@@ -14,18 +14,22 @@ import wk from '../assets/cburnett/wK.svg' //white pawn
 document.querySelector('.submit').addEventListener('click', () => {
     if(pastBoardPos[5][0] !== ""){
         submit(answerBoxes);
-        pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
-        createBoard(pastBoardPos[0][0]);
-        colorRow(document.querySelector('.unsubmitted'));
+        if(document.querySelector('.unsubmitted') !== null){
+            pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
+            createBoard(pastBoardPos[0][0]);
+            colorRow(document.querySelector('.unsubmitted'));
+        } 
         if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
             flipBoard();
         }
     }
 });
 document.querySelector('.back').addEventListener('click', () => {
-    updateBoardHistory(pastBoardPos, true, "");
-    if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
-        flipBoard();
+    if(document.querySelector('.unsubmitted') !== null){
+        updateBoardHistory(pastBoardPos, true, "");
+        if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
+            flipBoard();
+        }
     }
 });
 document.querySelector('.flip').addEventListener('click', (flipBoard));
@@ -68,7 +72,8 @@ export default function createBoard(fen, answer){
     if(answer !== undefined){
         pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
         convertAnswer(answer);
-    } 
+    }
+    annotateBoard();
 }
 
 
@@ -182,6 +187,7 @@ function convertBoardtoFEN(){
 }
 
 export function flipBoard(){
+    console.log('called')
     let i;
     if(document.getElementById('board').firstChild.style.order !== ""){
         if(document.getElementById('board').firstChild.style.order === "-1"){
@@ -204,6 +210,7 @@ export function flipBoard(){
     });
     side = board.querySelector('.row').style.order > 0
     document.querySelector('.boardside').src = side ? wk : bk;
+    annotateBoard();
 }
 
 export function updateBoardHistory(pastBoardPos, back, notation){
@@ -226,6 +233,42 @@ export function updateBoardHistory(pastBoardPos, back, notation){
                 i = 5;
             }
         }
-    }
+    }        
     updateAnswer(pastBoardPos);
 }
+
+function annotateBoard() {
+    if(document.querySelector('.annotation') === null){
+        document.querySelector('#board').querySelectorAll('.row').forEach(row => {
+            const annotation = document.createElement('div');
+            annotation.innerHTML = row.classList[1].charAt(1);
+            annotation.classList.add('annotation');
+            row.appendChild(annotation);
+        });
+    }
+    const row = document.querySelector('#board').querySelector('.row');
+    let files = ["a","b","c","d","e","f","g","h"];
+    if(row.style.order < 0){
+        files.reverse();
+    }
+    const bottomAnnotations = document.createElement('div');
+        files.forEach((file, index) => {
+            const fileDiv = document.createElement('div');
+            fileDiv.innerHTML = file;
+            fileDiv.style.color = index % 2 === 0 ? '#B58863' : '#F0D9B5';
+            bottomAnnotations.appendChild(fileDiv);
+        });
+    bottomAnnotations.classList.add('bottomAnnotation');
+    if(document.querySelector('.bottomAnnotation') !== null){
+        document.querySelector('.bottomAnnotation').remove();
+    }
+    document.querySelector('#board').appendChild(bottomAnnotations);
+    document.querySelectorAll('.annotation').forEach(annotation => {
+        if(row.style.order < 0){
+            annotation.style.color = annotation.innerHTML % 2 === 0 ? '#F0D9B5' : '#B58863';
+        } else {
+            annotation.style.color = annotation.innerHTML % 2 === 0 ? '#B58863' : '#F0D9B5'
+        }
+    });
+}
+  

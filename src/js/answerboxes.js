@@ -36,6 +36,9 @@ export function submit(answers){
     }
     if(green === 5 || document.querySelector('.unsubmitted') === null){
         displayWinLoss(green === 5)
+        document.querySelectorAll('.unsubmitted').forEach(row => {
+            row.classList.remove('unsubmitted');
+        });
     }
 }
 

@@ -111,7 +111,7 @@ export function presentPiece(square, piece){
                 movePiece(square, closestTarget, "", true);
                 p.style.zIndex = "1";
             } else {
-                square.innerHTML = "";
+                removePiece(square);
                 presentPiece(square, piece);
             }
           }
@@ -121,13 +121,13 @@ export function presentPiece(square, piece){
 export function movePiece(oldSquare, newSquare, promotion, annotate){
     const board = document.getElementById('board');
     const oldBoard = [board.cloneNode(true), getBoardPos()];
-    const piece = oldSquare.firstChild.classList[0];
-    const take = newSquare.firstChild === null ? false : true
-    const overwrittenTarget = newSquare.firstChild;
+    const piece = oldSquare.firstElementChild.classList[0];
+    const take = newSquare.firstElementChild === null ? false : true
+    const overwrittenTarget = newSquare.firstElementChild;
     if(newSquare && newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
         if(pastBoardPos[5][0] === ""){
-            newSquare.innerHTML = "";
-            oldSquare.innerHTML = "";
+            removePiece(newSquare);
+            removePiece(oldSquare);
             if(checkPromotionSquare(newSquare, piece)){
                 if(promotion !== ""){
                     presentPiece(newSquare, gamestate[0] ? promotion.toUpperCase() : promotion);
@@ -145,7 +145,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
             }
             function update(){
                 if(illegalPos(board)){
-                    newSquare.innerHTML = "";
+                    removePiece(newSquare);
                     if(overwrittenTarget !== null){
                         newSquare.appendChild(overwrittenTarget);
                     }
@@ -162,12 +162,12 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
                 }
             }
         } else {
-            oldSquare.innerHTML = "";
+            removePiece(oldSquare);
             presentPiece(oldSquare, piece);
         }
     }
     else {
-        oldSquare.innerHTML = "";
+        removePiece(oldSquare);
         presentPiece(oldSquare, piece);
     }
 }
@@ -182,7 +182,7 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
     switch(piece.toLowerCase()){
         case "p":
             if(nL[1] === "1" || nL[1] === "8"){
-                promotion = `=${newSquare.firstChild.classList[0]}`
+                promotion = `=${newSquare.firstElementChild.classList[0]}`
             }
             if(take){
                 piece = notateSquare(oldSquare).split('')[0];
@@ -295,10 +295,10 @@ export function getBoardPos(){
     board.querySelectorAll('.row').forEach(row => {
         let squares = []
         row.querySelectorAll('.square').forEach(square => {
-            if(square.firstChild === null){
+            if(square.firstElementChild === null){
                 squares.push("#");
             } else{
-                squares.push(square.firstChild.classList[0]);
+                squares.push(square.firstElementChild.classList[0]);
             }
         });
         arr.push(squares);
@@ -326,7 +326,7 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         if(taken === movingPiece){
             return false;
         }
-        if((newSquare.firstChild.classList[0] === "e" || newSquare.firstChild.classList[0] === "E") && piece.toLowerCase() !== "p"){
+        if((newSquare.firstElementChild.classList[0] === "e" || newSquare.firstElementChild.classList[0] === "E") && piece.toLowerCase() !== "p"){
             return false;
         }
     }
@@ -336,7 +336,7 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         const startingSquare = (piece === "P") ? 2 : 7;
         if(take){
             if(newRank - oldRank === direction && (newFile === oldFile + 1 || newFile === oldFile - 1)){
-                if((newSquare.firstChild.classList[0] === "e" || newSquare.firstChild.classList[0] === "E")) {
+                if((newSquare.firstElementChild.classList[0] === "e" || newSquare.firstElementChild.classList[0] === "E")) {
                     updateEnPassant([newRank - 1 - direction, newFile - 1], isUpperCase(piece), true)
                 }
                 updateEnPassant();
@@ -561,8 +561,8 @@ function isCheck(board, white){
     let check = false;
     board.querySelectorAll('.row').forEach(row => {
         row.querySelectorAll('.square').forEach(square => {
-            if(square.firstChild !== null && (isUpperCase(square.firstChild.classList[0]) !== white)){
-                if(checkLegal(square.firstChild.classList[0], square, kingSquare, true, boardArr, true)){
+            if(square.firstElementChild !== null && (isUpperCase(square.firstElementChild.classList[0]) !== white)){
+                if(checkLegal(square.firstElementChild.classList[0], square, kingSquare, true, boardArr, true)){
                     check = true;
                 }
             }
@@ -597,26 +597,26 @@ function checkCastle(white, long){
         if(isCheck(board, white)){
             return false;
         }
-        if(long && boardDivs[0][0].firstChild === null){
+        if(long && boardDivs[0][0].firstElementChild === null){
             return false;
         }
-        if(!long && boardDivs[0][7].firstChild === null){
+        if(!long && boardDivs[0][7].firstElementChild === null){
             return false;
         }
-        if(long && gamestate[2] && boardDivs[0][1].innerHTML === "" && boardDivs[0][2].innerHTML === ""
-         && boardDivs[0][3].innerHTML === "" && boardDivs[0][0].firstChild.classList[0] === "R"){ //white long castle
+        if(long && gamestate[2] && !boardDivs[0][1].hasChildNodes() && !boardDivs[0][2].hasChildNodes()
+         && !boardDivs[0][3].hasChildNodes() && boardDivs[0][0].firstElementChild.classList[0] === "R"){ //white long castle
             if(checkValid(boardDivs[0][4], boardDivs[0][3])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][2])){
-                    boardDivs[0][0].innerHTML = "";
+                    removePiece(boardDivs[0][0]);
                     presentPiece(boardDivs[0][3], "R");
                     return true;
                 }
             }
-        } else if(!long && gamestate[1] && boardDivs[0][5].innerHTML === "" && boardDivs[0][6].innerHTML === ""
-        && boardDivs[0][7].firstChild.classList[0] === "R"){ //white short castle
+        } else if(!long && gamestate[1] && !boardDivs[0][5].hasChildNodes() && !boardDivs[0][6].hasChildNodes() === ""
+        && boardDivs[0][7].firstElementChild.classList[0] === "R"){ //white short castle
             if(checkValid(boardDivs[0][4], boardDivs[0][5])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][6])){
-                    boardDivs[0][7].innerHTML = "";
+                    removePiece(boardDivs[0][7]);
                     presentPiece(boardDivs[0][5], "R");
                     return true;
                 }
@@ -626,26 +626,26 @@ function checkCastle(white, long){
         if(isCheck(board, white)) {
             return false;
         }
-        if(long && boardDivs[7][7].firstChild === null){
+        if(long && boardDivs[7][7].firstElementChild === null){
             return false;
         }
-        if(!long && boardDivs[7][0].firstChild === null){
+        if(!long && boardDivs[7][0].firstElementChild === null){
             return false;
         }
-        if(long && gamestate[4] && boardDivs[7][1].innerHTML === "" && boardDivs[7][2].innerHTML === ""
-        && boardDivs[7][0].firstChild.classList[0] === "r"){ //black long castle
+        if(long && gamestate[4] && !boardDivs[7][1].hasChildNodes() === "" && !boardDivs[7][2].hasChildNodes() === ""
+        && boardDivs[7][0].firstElementChild.classList[0] === "r"){ //black long castle
             if(checkValid(boardDivs[7][4], boardDivs[7][3])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][2])){
-                    boardDivs[7][0].innerHTML = "";
+                    removePiece(boardDivs[7][0]);
                     presentPiece(boardDivs[7][3], "r");
                     return true;
                 }
             }
-        } else if(!long && gamestate[3] && boardDivs[7][5].innerHTML === "" && boardDivs[7][6].innerHTML === "" &&
-        boardDivs[7][7].firstChild.classList[0] === "r"){ //black short castle
+        } else if(!long && gamestate[3] && !boardDivs[7][5].hasChildNodes() === "" && !boardDivs[7][6].hasChildNodes() === "" &&
+        boardDivs[7][7].firstElementChild.classList[0] === "r"){ //black short castle
             if(checkValid(boardDivs[7][4], boardDivs[7][5])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][6])){
-                    boardDivs[7][7].innerHTML = "";
+                    removePiece(boardDivs[7][7]);
                     presentPiece(boardDivs[7][5], "r");
                     return true;
                 }
@@ -654,10 +654,10 @@ function checkCastle(white, long){
     }
 
     function checkValid(oldKingSquare, newKingSquare){
-        oldKingSquare.innerHTML = "";
+        removePiece(oldKingSquare);
         presentPiece(newKingSquare, white ? "K" : "k");
         let valid = !isCheck(board, white);
-        newKingSquare.innerHTML = "";
+        removePiece(newKingSquare);
         presentPiece(oldKingSquare, white ? "K" : "k");
         return valid;
     }
@@ -797,12 +797,12 @@ function isCheckMate(board, white){
     }
 
     function testMoves(piece, oldSquare, newSquare){
-        const newSquareChild = newSquare.firstChild;
-        oldSquare.innerHTML = "";
-        newSquare.innerHTML = "";
+        const newSquareChild = newSquare.firstElementChild;
+        removePiece(oldSquare);
+        removePiece(newSquare);
         presentPiece(newSquare, piece);
         if(isCheck(board, white)){
-            newSquare.innerHTML = "";
+            removePiece(newSquare);
             if (newSquareChild) {
                 newSquare.appendChild(newSquareChild);
             }
@@ -810,7 +810,7 @@ function isCheckMate(board, white){
             return false;
         }
         else {
-            newSquare.innerHTML = "";
+            removePiece(newSquare);
             if (newSquareChild) {
                 newSquare.appendChild(newSquareChild);
             }
@@ -827,8 +827,8 @@ function updateEnPassant(square, white, remove){
     [...board.querySelectorAll('.row')].reverse().forEach(row => {
         let rows = []
         row.querySelectorAll('.square').forEach(square => {
-            if(square.innerHTML !== "" && (square.firstChild.classList[0] === "e" || square.firstChild.classList[0] === "E")){
-                square.innerHTML = "";
+            if(square.hasChildNodes() && (square.firstElementChild.classList[0] === "e" || square.firstElementChild.classList[0] === "E")){
+                removePiece(square);
             }
             rows.push(square);
         });
@@ -838,7 +838,7 @@ function updateEnPassant(square, white, remove){
         return;
     }
     if(remove === true){
-        boardDivs[square[0]][square[1]].innerHTML = "";
+        removePiece(boardDivs[square[0]][square[1]])
     }
     if(square !== null && remove !== true){
         //console.log(boardDivs[square[0]][square[1]])
@@ -905,3 +905,8 @@ function promotionPrompt(square, white) {
     });
   }
   
+function removePiece(square){
+    while (square.lastChild) {
+        square.removeChild(square.lastChild);
+    }
+}

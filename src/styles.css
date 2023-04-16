@@ -85,6 +85,7 @@ body{
     grid-template-columns: repeat(8, 1fr);
 }
 
+
 .buttons button{
     color:black;
     width: 100%;
@@ -314,4 +315,36 @@ body{
 }
 .unsubmitted .black {
     color: #fff
+}
+
+#board .row > .annotation::before {
+    content: "";
+    display: block;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+#board .row > .annotation {
+	position: absolute;
+	height: 0%;
+	z-index: 1;
+	user-select: none;
+    padding: 4px;
+}
+
+.bottomAnnotation {
+	position: absolute;
+	bottom: 0;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	width: 100%;
+	padding-bottom: 4px;
+	z-index: 1;
+    direction: rtl;
+}
+
+.bottomAnnotation > *{
+    padding-right: 4px;
+    user-select: none;
 }
