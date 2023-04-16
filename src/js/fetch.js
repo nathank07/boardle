@@ -9,10 +9,8 @@ export default async function getRandomPuzzle(){
         const data = await response.json();
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
-        console.log(data.games)
         clearAnswers();
         puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
-        console.log(puzzleDetails);
         return createBoard(data.fen, data.moves)
     } catch (error) {
         console.error(error);
@@ -27,7 +25,6 @@ export async function getID(id){
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         clearAnswers();
         puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
-        console.log(puzzleDetails);
         return createBoard(data.fen, data.moves);
     } catch (error) {
         console.error(error);
@@ -40,10 +37,8 @@ export async function getPuzzleByRating(rating){
         const data = await response.json();
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
-        console.log(data.games);
         clearAnswers();
         puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
-        console.log(puzzleDetails);
         return createBoard(data.fen, data.moves);
     } catch (error) {
         console.error(error);

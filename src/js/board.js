@@ -187,7 +187,6 @@ function convertBoardtoFEN(){
 }
 
 export function flipBoard(){
-    console.log('called')
     let i;
     if(document.getElementById('board').firstChild.style.order !== ""){
         if(document.getElementById('board').firstChild.style.order === "-1"){

@@ -34,6 +34,7 @@ export function presentPiece(square, piece){
         const pIcon = new Image();
         pIcon.src = pieces[piece];
         pIcon.classList.add(piece);
+        pIcon.setAttribute('draggable', false);
         dragPiece(pIcon);
         square.appendChild(pIcon);
     }
@@ -46,25 +47,29 @@ export function presentPiece(square, piece){
     function dragPiece(p) { // Modified function from https://www.w3schools.com/howto/howto_js_draggable.asp
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         p.onmousedown = dragMouseDown;
-
         function dragMouseDown(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // get the mouse cursor position at startup:
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // get the offset between the element and its parent container:
-            let rect = p.getBoundingClientRect();
-            let offsetX = rect.left - p.offsetLeft;
-            let offsetY = rect.top - p.offsetTop;
-            // set the initial position of the element to the center of the cursor:
-            let centerX = p.offsetWidth / 2;
-            let centerY = p.offsetHeight / 2;
-            p.style.left = (pos3 - centerX - offsetX) + "px";
-            p.style.top = (pos4 - centerY - offsetY) + "px";
-            document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
-            document.onmousemove = elementDrag;
+            if(gamestate[0] === isUpperCase(p.classList[0])){
+                p.style.pointerEvents = 'auto';
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // get the offset between the element and its parent container:
+                let rect = p.getBoundingClientRect();
+                let offsetX = rect.left - p.offsetLeft;
+                let offsetY = rect.top - p.offsetTop;
+                // set the initial position of the element to the center of the cursor:
+                let centerX = p.offsetWidth / 2;
+                let centerY = p.offsetHeight / 2;
+                p.style.left = (pos3 - centerX - offsetX) + "px";
+                p.style.top = (pos4 - centerY - offsetY) + "px";
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            } else {
+                p.style.pointerEvents = 'none';
+            }
         }
         
         function elementDrag(e) {
