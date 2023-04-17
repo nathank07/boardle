@@ -39,7 +39,7 @@ export function presentPiece(square, piece){
         pIcon.src = pieces[piece];
         pIcon.classList.add(piece);
         pIcon.setAttribute('draggable', false);
-        dragPiece(pIcon);
+        dragPiece(pIcon, square);
         square.appendChild(pIcon);
     }
     if(piece === "e" || piece === "E"){
@@ -47,89 +47,89 @@ export function presentPiece(square, piece){
         enPassantSquare.classList.add(`${piece}`);
         square.appendChild(enPassantSquare);
     }
+}
 
-    function dragPiece(p) { // Modified function from https://www.w3schools.com/howto/howto_js_draggable.asp
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        p.onmousedown = dragMouseDown;
-        function dragMouseDown(e) {
-            if(event.button === 0){
-                if(gamestate[0] === isUpperCase(p.classList[0])){
-                    p.style.pointerEvents = 'auto';
-                    e = e || window.event;
-                    e.preventDefault();
-                    // get the mouse cursor position at startup:
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    // get the offset between the element and its parent container:
-                    let rect = p.getBoundingClientRect();
-                    let offsetX = rect.left - p.offsetLeft;
-                    let offsetY = rect.top - p.offsetTop;
-                    // set the initial position of the element to the center of the cursor:
-                    let centerX = p.offsetWidth / 2;
-                    let centerY = p.offsetHeight / 2;
-                    p.style.left = (pos3 - centerX - offsetX) + "px";
-                    p.style.top = (pos4 - centerY - offsetY) + "px";
-                    document.onmouseup = closeDragElement;
-                    // call a function whenever the cursor moves:
-                    document.onmousemove = elementDrag;
-                } else {
-                    if(selectedSquare !== undefined){
-                        movePiece(selectedSquare, square, "", true, true);
-                    }
-                    selectSquare();
-                }
-                selectSquare(square);
-            }
-        }
-        
-        function elementDrag(e) {
-            e = e || window.event;
-            e.preventDefault();
-            // calculate the new cursor position:
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            // set the element's new position:
-            p.style.top = (p.offsetTop - pos2) + "px";
-            p.style.left = (p.offsetLeft - pos1) + "px";
-            p.style.zIndex = "3";
-        }
-        
-        function closeDragElement() {
-            // stop moving when mouse button is released:
-            document.onmouseup = null;
-            document.onmousemove = null;
-            square.style.zIndex = 'auto';
-            p.style.zIndex = "2";
-            // find all potential target elements:
-            let targets = document.querySelectorAll('#board .square');
-          
-            // calculate the center coordinates of the dragged element:
-            let dragSq = p.getBoundingClientRect();
-            let dragX = dragSq.left + dragSq.width / 2;
-            let dragY = dragSq.top + dragSq.height / 2;
-          
-            // find the closest target element:
-            let closestTarget = null;
-            let closestDistance = Infinity;
-            targets.forEach(target => {
-              let targetSq = target.getBoundingClientRect();
-              let targetX = targetSq.left + targetSq.width / 2;
-              let targetY = targetSq.top + targetSq.height / 2;
-              let distance = Math.sqrt(Math.pow(dragX - targetX, 2) + Math.pow(dragY - targetY, 2));
-              if (distance < closestDistance) {
-                closestTarget = target;
-                closestDistance = distance;
-              }
-            });
-            if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
-                movePiece(square, closestTarget, "", true, true);
+function dragPiece(p, square) { // Modified function from https://www.w3schools.com/howto/howto_js_draggable.asp
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    p.onmousedown = dragMouseDown;
+    function dragMouseDown(e) {
+        if(event.button === 0){
+            if(gamestate[0] === isUpperCase(p.classList[0])){
+                p.style.pointerEvents = 'auto';
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // get the offset between the element and its parent container:
+                let rect = p.getBoundingClientRect();
+                let offsetX = rect.left - p.offsetLeft;
+                let offsetY = rect.top - p.offsetTop;
+                // set the initial position of the element to the center of the cursor:
+                let centerX = p.offsetWidth / 2;
+                let centerY = p.offsetHeight / 2;
+                p.style.left = (pos3 - centerX - offsetX) + "px";
+                p.style.top = (pos4 - centerY - offsetY) + "px";
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
             } else {
-                removePiece(square);
-                presentPiece(square, piece);
+                if(selectedSquare !== undefined){
+                    movePiece(selectedSquare, square, "", true, true);
+                }
+                selectSquare();
             }
+            selectSquare(square);
+        }
+    }
+    
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        p.style.top = (p.offsetTop - pos2) + "px";
+        p.style.left = (p.offsetLeft - pos1) + "px";
+        p.style.zIndex = "3";
+    }
+    
+    function closeDragElement() {
+        // stop moving when mouse button is released:
+        document.onmouseup = null;
+        document.onmousemove = null;
+        square.style.zIndex = 'auto';
+        p.style.zIndex = "2";
+        // find all potential target elements:
+        let targets = document.querySelectorAll('#board .square');
+      
+        // calculate the center coordinates of the dragged element:
+        let dragSq = p.getBoundingClientRect();
+        let dragX = dragSq.left + dragSq.width / 2;
+        let dragY = dragSq.top + dragSq.height / 2;
+      
+        // find the closest target element:
+        let closestTarget = null;
+        let closestDistance = Infinity;
+        targets.forEach(target => {
+          let targetSq = target.getBoundingClientRect();
+          let targetX = targetSq.left + targetSq.width / 2;
+          let targetY = targetSq.top + targetSq.height / 2;
+          let distance = Math.sqrt(Math.pow(dragX - targetX, 2) + Math.pow(dragY - targetY, 2));
+          if (distance < closestDistance) {
+            closestTarget = target;
+            closestDistance = distance;
           }
+        });
+        if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
+            movePiece(square, closestTarget, "", true, true);
+        } else {
+            removePiece(square);
+            presentPiece(square, piece);
+        }
       }
 }
 
@@ -140,7 +140,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
     const take = newSquare.firstElementChild === null ? false : true
     const overwrittenTarget = newSquare.firstElementChild;
     const pieceSound = take ? new Audio(capture) : new Audio(move)
-    if(newSquare && newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
+    if(newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
         if(pastBoardPos[5][0] === ""){
             removePiece(newSquare);
             removePiece(oldSquare);
@@ -169,23 +169,13 @@ export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
                 } else {
                     gamestate[0] = !gamestate[0];
                     if(annotate){
-                        if(isCheck(board, gamestate[0])){
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, true, isCheckMate(board, gamestate[0]), oldBoard));
-                            highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
-                            highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
-                            if(sound){
-                                pieceSound.play();
-                            }
-                            selectSquare();
-                        } else {
-                            updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, false, false, oldBoard));
-                            highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
-                            highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
-                            if(sound){
-                                pieceSound.play();
-                            }
-                            selectSquare()
+                        updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, isCheck(board, gamestate[0]), isCheck(board, gamestate[0]) ? isCheckMate(board, gamestate[0]) : false, oldBoard));
+                        highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
+                        highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
+                        if(sound){
+                            pieceSound.play();
                         }
+                        selectSquare();
                     }
                 }
                 highlightKing(gamestate[0]);
@@ -626,18 +616,11 @@ function checkCastle(white, long){
         });
         boardDivs.push(rows);
     });
-    if(white){
-        if(isCheck(board, white)){
-            return false;
-        }
-        if(long && boardDivs[0][0].firstElementChild === null){
-            return false;
-        }
-        if(!long && boardDivs[0][7].firstElementChild === null){
-            return false;
-        }
-        if(long && gamestate[2] && !boardDivs[0][1].hasChildNodes() && !boardDivs[0][2].hasChildNodes()
-         && !boardDivs[0][3].hasChildNodes() && boardDivs[0][0].firstElementChild.classList[0] === "R"){ //white long castle
+    if(isCheck(board, white)){
+        return false;
+    }
+    if(white){ 
+        if(long && gamestate[2] && checkCastlePath([boardDivs[0][1], boardDivs[0][2], boardDivs[0][3]], boardDivs[0][0])){ //white long castle
             if(checkValid(boardDivs[0][4], boardDivs[0][3])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][2])){
                     removePiece(boardDivs[0][0]);
@@ -645,8 +628,7 @@ function checkCastle(white, long){
                     return true;
                 }
             }
-        } else if(!long && gamestate[1] && !boardDivs[0][5].hasChildNodes() && !boardDivs[0][6].hasChildNodes()
-        && boardDivs[0][7].firstElementChild.classList[0] === "R"){ //white short castle
+        } else if(!long && gamestate[1] && checkCastlePath([boardDivs[0][5], boardDivs[0][6]], boardDivs[0][7])){ //white short castle
             if(checkValid(boardDivs[0][4], boardDivs[0][5])){
                 if(checkValid(boardDivs[0][4], boardDivs[0][6])){
                     removePiece(boardDivs[0][7]);
@@ -656,17 +638,7 @@ function checkCastle(white, long){
             }
         }
     } else {
-        if(isCheck(board, white)) {
-            return false;
-        }
-        if(long && boardDivs[7][7].firstElementChild === null){
-            return false;
-        }
-        if(!long && boardDivs[7][0].firstElementChild === null){
-            return false;
-        }
-        if(long && gamestate[4] && !boardDivs[7][1].hasChildNodes() === "" && !boardDivs[7][2].hasChildNodes()
-        && boardDivs[7][0].firstElementChild.classList[0] === "r"){ //black long castle
+        if(long && gamestate[4] && checkCastlePath([boardDivs[7][1], boardDivs[7][2], boardDivs[7][3]], boardDivs[7][0])){ //black long castle
             if(checkValid(boardDivs[7][4], boardDivs[7][3])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][2])){
                     removePiece(boardDivs[7][0]);
@@ -674,8 +646,7 @@ function checkCastle(white, long){
                     return true;
                 }
             }
-        } else if(!long && gamestate[3] && !boardDivs[7][5].hasChildNodes() === "" && !boardDivs[7][6].hasChildNodes() &&
-        boardDivs[7][7].firstElementChild.classList[0] === "r"){ //black short castle
+        } else if(!long && gamestate[3] && checkCastlePath([boardDivs[7][5], boardDivs[7][6]], boardDivs[7][7])){ //black short castle
             if(checkValid(boardDivs[7][4], boardDivs[7][5])){
                 if(checkValid(boardDivs[7][4], boardDivs[7][6])){
                     removePiece(boardDivs[7][7]);
@@ -685,7 +656,21 @@ function checkCastle(white, long){
             }
         }
     }
-
+    function checkCastlePath(emptySquares, rookSquare){
+        let empty = true;
+        let rook = false;
+        emptySquares.forEach(square => {
+            if(square.hasChildNodes()){
+                empty = false;
+            }
+        });
+        if(rookSquare.hasChildNodes()){
+            if(rookSquare.firstElementChild.classList[0] === white ? "R" : "r"){
+                rook = true;
+            }
+        }
+        return empty && rook;
+    }
     function checkValid(oldKingSquare, newKingSquare){
         removePiece(oldKingSquare);
         presentPiece(newKingSquare, white ? "K" : "k");
@@ -715,115 +700,61 @@ function isCheckMate(board, white){
                 switch(rboardArr[i][j].toLowerCase()){
                     case "p":
                         const pdirections = [[1, 0],[2, 0],[-1, 0], [-2, 0], [1, 1],  [1, -1], [-1, -1],[-1, 1]];
-                        for (const [dx, dy] of pdirections) {
-                        const x = i + dx;
-                        const y = j + dy;
-                        if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                            const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                            if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
-                                if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
-                                    //console.log(boardDivs[i][j], boardDivs[x][y])
-                                    legalmoves += 1
-                                }
-                            }
-                        }
-                        }
+                        testPiece(pdirections);
                         break;
                     case "n":
                         const ndirections = [[2, 1], [1, 2], [-1, 2], [-2, 1], [-2, -1], [-1, -2], [1, -2], [2, -1]];
-                        for (const [dx, dy] of ndirections) {
-                            let x = i + dx;
-                            let y = j + dy;
-                            if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                                if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
-                                    if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
-                                        //console.log(boardDivs[i][j], boardDivs[x][y])
-                                        legalmoves += 1;
-                                    }
-                                }
-                            }
-                        }
+                        testPiece(ndirections);
+                        break;
                     case "b":
                         const bdirections = [[1, 1], [1, -1], [-1, -1], [-1, 1]];
-                        for (const [dx, dy] of bdirections) {
-                            let x = i + dx;
-                            let y = j + dy;
-                            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                                if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
-                                    if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
-                                        //console.log(boardDivs[i][j], boardDivs[x][y])
-                                        legalmoves += 1;
-                                    }
-                                }
-                                if (take) {
-                                    break;
-                                }
-                                x += dx;
-                                y += dy;
-                            }
-                        }
+                        testBlockedPieces(bdirections);
                         break;
                     case "r":
                         const rdirections = [[0, 1], [1, 0], [0, -1], [-1, 0]];
-                        for (const [dx, dy] of rdirections) {
-                            let x = i + dx;
-                            let y = j + dy;
-                            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                                if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
-                                    if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
-                                        //console.log(boardDivs[i][j], boardDivs[x][y])
-                                        legalmoves += 1;
-                                    }
-                                }
-                                if (take) {
-                                    break;
-                                }
-                                x += dx;
-                                y += dy;
-                            }
-                        }
+                        testBlockedPieces(rdirections);
                         break;
                     case "q":
                         const qdirections = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
-                        for (const [dx, dy] of qdirections) {
-                            let x = i + dx;
-                            let y = j + dy;
-                            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                                //console.log(take);
-                                if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
-                                    if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
-                                        //console.log(boardDivs[i][j], boardDivs[x][y])
-                                        legalmoves += 1;
-                                    }
-                                }
-                                if (take) {
-                                    break;
-                                }
-                                x += dx;
-                                y += dy;
-                            }
-                        }
+                        testBlockedPieces(qdirections);
                         break;
                     case "k":
                         const kdirections = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
-                        for (const [dx, dy] of kdirections) {
-                            let x = i + dx;
-                            let y = j + dy;
-                            if (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                                const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
-                                if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
-                                    if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
-                                        //console.log(boardDivs[i][j], boardDivs[x][y])
-                                        legalmoves += 1;
-                                    }
-                                }
+                        testPiece(kdirections);
+                        break;
+                }
+            }
+            function testPiece(directions){
+                for (const [dx, dy] of directions) {
+                    let x = i + dx;
+                    let y = j + dy;
+                    if (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                        const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
+                        if(checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
+                            if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
+                                legalmoves += 1;
                             }
                         }
-                        break;
+                    }
+                }
+            }
+            function testBlockedPieces(directions){
+                for (const [dx, dy] of directions) {
+                    let x = i + dx;
+                    let y = j + dy;
+                    while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                        const take = rboardArr[x][y] !== "#" && rboardArr[x][y] !== "e" && rboardArr[x][y] !== "E";
+                        if (checkLegal(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y], take, boardArr, true)) {
+                            if(testMoves(rboardArr[i][j], boardDivs[i][j], boardDivs[x][y])){
+                                legalmoves += 1;
+                            }
+                        }
+                        if (take) {
+                            break;
+                        }
+                        x += dx;
+                        y += dy;
+                    }
                 }
             }
         }
@@ -874,7 +805,6 @@ function updateEnPassant(square, white, remove){
         removePiece(boardDivs[square[0]][square[1]])
     }
     if(square !== null && remove !== true){
-        //console.log(boardDivs[square[0]][square[1]])
         presentPiece(boardDivs[square[0]][square[1]], white ? "E" : "e");
     }
 }
