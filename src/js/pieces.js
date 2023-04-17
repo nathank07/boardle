@@ -137,7 +137,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
     const board = document.getElementById('board');
     const oldBoard = [board.cloneNode(true), getBoardPos()];
     const piece = oldSquare.firstElementChild.classList[0];
-    const take = newSquare.firstElementChild === null ? false : true
+    const take = newSquare.firstElementChild === null || (newSquare.firstElementChild.classList[0].toLowerCase() === "e" && piece.toLowerCase() !== "p") ? false : true
     const overwrittenTarget = newSquare.firstElementChild;
     const pieceSound = take ? new Audio(capture) : new Audio(move)
     if(newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
@@ -347,9 +347,6 @@ function checkLegal(piece, oldSquare, newSquare, take, board, exempt) {
         const taken = isUpperCase(rboard[newRank - 1][newFile - 1]);
         const movingPiece = isUpperCase(piece);
         if(taken === movingPiece){
-            return false;
-        }
-        if((newSquare.firstElementChild.classList[0] === "e" || newSquare.firstElementChild.classList[0] === "E") && piece.toLowerCase() !== "p"){
             return false;
         }
     }
