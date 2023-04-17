@@ -354,11 +354,11 @@ body{
     background-color: #DA4331;
 }
 
-#board .square.highlighted{
+#board .square.highlighted, #board .square.playerHighlighted{
     background-color:  #F8EC5A;
 }
 
-#board .darkSquare.highlighted{
+#board .darkSquare.highlighted, #board .darkSquare.playerHighlighted{
     background-color: #DAC431;
 }
 

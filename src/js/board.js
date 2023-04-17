@@ -17,7 +17,10 @@ document.querySelector('.submit').addEventListener('click', () => {
         submit(answerBoxes);
         if(document.querySelector('.unsubmitted') !== null){
             pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
+            highlights = [highlights[0]]
             createBoard(pastBoardPos[0][0]);
+            highlights[0]();
+            p.highlightKing(gamestate[0]);
             colorRow(document.querySelector('.unsubmitted'));
         } 
         if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
@@ -84,6 +87,7 @@ export default function createBoard(fen, answer){
         convertAnswer(answer);
     }
     annotateBoard();
+    p.makeSquaresClickable();
 }
 
 

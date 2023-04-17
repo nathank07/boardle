@@ -15,6 +15,8 @@ import { gamestate, highlights, pastBoardPos, updateBoardHistory } from './board
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
 
+let selectedSquare;
+
 export function presentPiece(square, piece){
     const pieces = {
         k: bk,
@@ -50,6 +52,7 @@ export function presentPiece(square, piece){
         function dragMouseDown(e) {
             if(gamestate[0] === isUpperCase(p.classList[0])){
                 if(event.button === 0){
+                    selectSquare(square);
                     p.style.pointerEvents = 'auto';
                     e = e || window.event;
                     e.preventDefault();
@@ -69,6 +72,11 @@ export function presentPiece(square, piece){
                     // call a function whenever the cursor moves:
                     document.onmousemove = elementDrag;
                 }
+            } else {
+                if(selectedSquare){
+                    movePiece(selectedSquare, square, "", true);
+                }
+                selectSquare();
             }
         }
         
@@ -940,4 +948,26 @@ export function highlightMove(oldSquare, newSquare){
     });
     notationToSquare(oldSquare).classList.add('highlighted');
     notationToSquare(newSquare).classList.add('highlighted');
+}
+
+function selectSquare(square){
+    document.querySelector('#board').querySelectorAll('.square').forEach(div => {
+        div.classList.remove('playerHighlighted');
+        selectedSquare = undefined;
+    });
+    if(square){
+        square.classList.add('playerHighlighted');
+        selectedSquare = square;
+    }
+}
+
+export function makeSquaresClickable(){
+    document.querySelector('#board').querySelectorAll('.square').forEach(square => {
+        square.addEventListener('click', () => {
+            if(selectedSquare){
+                movePiece(selectedSquare, square, "", true);
+            }
+            selectSquare();
+        })
+    });
 }
