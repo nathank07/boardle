@@ -7,6 +7,7 @@ export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], [""
 export let whiteBoardSide = true;
 export let answerBoxes = [];
 let side = true;
+export let highlights = [];
 import bk from '../assets/cburnett/bK.svg' //black pawn
 import wk from '../assets/cburnett/wK.svg' //white pawn
 //white | white short castle | white long castle | black short castle | black long castle
@@ -28,6 +29,12 @@ document.querySelector('.back').addEventListener('click', () => {
     if(document.querySelector('.unsubmitted') !== null){
         updateBoardHistory(pastBoardPos, true, "");
         p.highlightKing(gamestate[0]);
+        if(highlights.length > 1){
+            highlights.pop();
+            highlights[highlights.length - 1]();
+        } else {
+            highlights[0]()
+        }
         if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
             flipBoard();
         }
@@ -157,6 +164,10 @@ function convertAnswer(answer){
     document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
     document.querySelector('.boardside').src = whiteBoardSide ? wk : bk;
     colorRow(document.querySelector('.unsubmitted'));
+    p.highlightKing(gamestate[0]);
+    p.highlightMove(answers[answers.length - 6].substring(0,2), answers[answers.length - 6].substring(2,4));
+    highlights = [];
+    highlights[0] = (() => p.highlightMove(answers[answers.length - 6].substring(0,2), answers[answers.length - 6].substring(2,4)));
 }
 
 function convertBoardtoFEN(){
@@ -287,4 +298,5 @@ function colorSquare(square){
         }
     }
 }
+
 

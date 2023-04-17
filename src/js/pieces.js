@@ -10,7 +10,7 @@ import bn from '../assets/cburnett/bN.svg' //black knight
 import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
-import { gamestate, pastBoardPos, updateBoardHistory } from './board'; 
+import { gamestate, highlights, pastBoardPos, updateBoardHistory } from './board'; 
 
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
@@ -83,8 +83,7 @@ export function presentPiece(square, piece){
             // set the element's new position:
             p.style.top = (p.offsetTop - pos2) + "px";
             p.style.left = (p.offsetLeft - pos1) + "px";
-            square.zIndex = "3";
-            p.parentElement.style.zIndex = "3";
+            p.style.zIndex = "3";
         }
         
         function closeDragElement() {
@@ -161,8 +160,12 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
                     if(annotate){
                         if(isCheck(board, gamestate[0])){
                             updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, true, isCheckMate(board, gamestate[0]), oldBoard));
+                            highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
+                            highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
                         } else {
                             updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, false, false, oldBoard));
+                            highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
+                            highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
                         }
                     }
                 }
@@ -929,4 +932,12 @@ export function highlightKing(white){
     if(isCheck(document.querySelector('#board'), white)){
         document.querySelector(`img.${white ? "K" : "k"}`).parentElement.classList.add('inCheck');
     }
+}
+
+export function highlightMove(oldSquare, newSquare){
+    document.querySelectorAll('.highlighted').forEach(square => {
+        square.classList.remove('highlighted');
+    });
+    notationToSquare(oldSquare).classList.add('highlighted');
+    notationToSquare(newSquare).classList.add('highlighted');
 }

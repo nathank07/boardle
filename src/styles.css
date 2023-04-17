@@ -346,14 +346,23 @@ body{
     user-select: none;
 }
 
-#board .square.selected{
+#board .square.selected, #board .square.highlighted.selected{
     background-color: rgba(255,0,0,0.5);
 }
 
-#board .darkSquare.selected{
+#board .darkSquare.selected, #board .darkSquare.highlighted.selected{
     background-color: #DA4331;
+}
+
+#board .square.highlighted{
+    background-color:  #F8EC5A;
+}
+
+#board .darkSquare.highlighted{
+    background-color: #DAC431;
 }
 
 #board > .row > .inCheck{
     box-shadow: inset 0px 0px 50px rgba(255, 0, 0, 0.8), 0px 0px 25px rgba(255, 0, 0, 0.1), 0px 0px 20px rgba(255, 0, 0, 0.5);
 }
+
