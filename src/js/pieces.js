@@ -176,6 +176,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
                             if(sound){
                                 pieceSound.play();
                             }
+                            selectSquare();
                         } else {
                             updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, false, false, oldBoard));
                             highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
@@ -183,6 +184,7 @@ export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
                             if(sound){
                                 pieceSound.play();
                             }
+                            selectSquare()
                         }
                     }
                 }
@@ -959,7 +961,7 @@ export function highlightMove(oldSquare, newSquare){
     notationToSquare(newSquare).classList.add('highlighted');
 }
 
-function selectSquare(square){
+export function selectSquare(square){
     if(selectedSquare === undefined){
         selectedSquare = "";
     }

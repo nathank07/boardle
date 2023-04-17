@@ -21,6 +21,7 @@ document.querySelector('.submit').addEventListener('click', () => {
             createBoard(pastBoardPos[0][0]);
             highlights[0]();
             p.highlightKing(gamestate[0]);
+            p.selectSquare();
             colorRow(document.querySelector('.unsubmitted'));
         } 
         if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
@@ -32,6 +33,7 @@ document.querySelector('.back').addEventListener('click', () => {
     if(document.querySelector('.unsubmitted') !== null){
         updateBoardHistory(pastBoardPos, true, "");
         p.highlightKing(gamestate[0]);
+        p.selectSquare();
         if(highlights.length > 1){
             highlights.pop();
             highlights[highlights.length - 1]();
