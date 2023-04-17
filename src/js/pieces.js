@@ -53,7 +53,6 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     p.onmousedown = dragMouseDown;
     function dragMouseDown(e) {
-        console.log(p);
         if(event.button === 0){
             if(gamestate[0] === isUpperCase(p.classList[0])){
                 p.style.pointerEvents = 'auto';
