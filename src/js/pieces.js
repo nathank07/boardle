@@ -10,6 +10,8 @@ import bn from '../assets/cburnett/bN.svg' //black knight
 import wn from '../assets/cburnett/wN.svg' //white knight
 import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
+import move from '../assets/sounds/Move.ogg'
+import capture from '../assets/sounds/Capture.ogg'
 import { gamestate, highlights, pastBoardPos, updateBoardHistory } from './board'; 
 
 //white | white short castle | white long castle | black short castle | black long castle
@@ -50,9 +52,8 @@ export function presentPiece(square, piece){
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         p.onmousedown = dragMouseDown;
         function dragMouseDown(e) {
-            if(gamestate[0] === isUpperCase(p.classList[0])){
-                if(event.button === 0){
-                    selectSquare(square);
+            if(event.button === 0){
+                if(gamestate[0] === isUpperCase(p.classList[0])){
                     p.style.pointerEvents = 'auto';
                     e = e || window.event;
                     e.preventDefault();
@@ -71,12 +72,13 @@ export function presentPiece(square, piece){
                     document.onmouseup = closeDragElement;
                     // call a function whenever the cursor moves:
                     document.onmousemove = elementDrag;
+                } else {
+                    if(selectedSquare !== undefined){
+                        movePiece(selectedSquare, square, "", true, true);
+                    }
+                    selectSquare();
                 }
-            } else {
-                if(selectedSquare){
-                    movePiece(selectedSquare, square, "", true);
-                }
-                selectSquare();
+                selectSquare(square);
             }
         }
         
@@ -122,7 +124,7 @@ export function presentPiece(square, piece){
               }
             });
             if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
-                movePiece(square, closestTarget, "", true);
+                movePiece(square, closestTarget, "", true, true);
             } else {
                 removePiece(square);
                 presentPiece(square, piece);
@@ -131,12 +133,13 @@ export function presentPiece(square, piece){
       }
 }
 
-export function movePiece(oldSquare, newSquare, promotion, annotate){
+export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
     const board = document.getElementById('board');
     const oldBoard = [board.cloneNode(true), getBoardPos()];
     const piece = oldSquare.firstElementChild.classList[0];
     const take = newSquare.firstElementChild === null ? false : true
     const overwrittenTarget = newSquare.firstElementChild;
+    const pieceSound = take ? new Audio(capture) : new Audio(move)
     if(newSquare && newSquare !== oldSquare && checkLegal(piece, oldSquare, newSquare, take, getBoardPos())) {
         if(pastBoardPos[5][0] === ""){
             removePiece(newSquare);
@@ -170,10 +173,16 @@ export function movePiece(oldSquare, newSquare, promotion, annotate){
                             updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, true, isCheckMate(board, gamestate[0]), oldBoard));
                             highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
                             highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
+                            if(sound){
+                                pieceSound.play();
+                            }
                         } else {
                             updateBoardHistory(pastBoardPos, false, calculateNotation(piece, oldSquare, newSquare, take, false, false, oldBoard));
                             highlightMove(notateSquare(oldSquare), notateSquare(newSquare));
                             highlights.push(() => highlightMove(notateSquare(oldSquare), notateSquare(newSquare)));
+                            if(sound){
+                                pieceSound.play();
+                            }
                         }
                     }
                 }
@@ -951,11 +960,19 @@ export function highlightMove(oldSquare, newSquare){
 }
 
 function selectSquare(square){
+    if(selectedSquare === undefined){
+        selectedSquare = "";
+    }
+    let validSquare = true;
+    if(square === undefined || selectedSquare === square ||  !square.hasChildNodes() || 
+    isUpperCase(square.firstElementChild.classList[0]) !== gamestate[0]){
+        validSquare = false;
+    }
     document.querySelector('#board').querySelectorAll('.square').forEach(div => {
         div.classList.remove('playerHighlighted');
         selectedSquare = undefined;
     });
-    if(square){
+    if(validSquare){
         square.classList.add('playerHighlighted');
         selectedSquare = square;
     }
@@ -964,10 +981,12 @@ function selectSquare(square){
 export function makeSquaresClickable(){
     document.querySelector('#board').querySelectorAll('.square').forEach(square => {
         square.addEventListener('click', () => {
-            if(selectedSquare){
-                movePiece(selectedSquare, square, "", true);
+            if(event.button === 0){
+                if(selectedSquare !== undefined){
+                    movePiece(selectedSquare, square, "", true, true);
+                }
+                selectSquare();
             }
-            selectSquare();
         })
     });
 }

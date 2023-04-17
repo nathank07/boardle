@@ -1,5 +1,6 @@
 import getRandomPuzzle, { puzzleDetails } from "./fetch";
 import { gamestate, answerBoxes } from "./board";
+import promptAudio from '../assets/sounds/GenericNotify.ogg'
 
 export default function updateAnswer(pastBoardPos){
     const targetRow = document.querySelector('.unsubmitted');
@@ -39,6 +40,8 @@ export function submit(answers){
         document.querySelectorAll('.unsubmitted').forEach(row => {
             row.classList.remove('unsubmitted');
         });
+        const audio = new Audio(promptAudio);
+        audio.play();
     }
 }
 
@@ -169,5 +172,5 @@ ${window.location.href}`;
     prompt.appendChild(solution);
     prompt.appendChild(playerAnswer);
     prompt.appendChild(footer);
-    document.body.appendChild(overlay)
+    document.body.appendChild(overlay);
 }

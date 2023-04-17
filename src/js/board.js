@@ -146,9 +146,9 @@ function convertAnswer(answer){
         const newSquare = p.notationToSquare(answers[i].substring(2, 4));
         const promotion = answers[i].substring(4);
         if(answers.length - i <= 5){
-            p.movePiece(oldSquare, newSquare, promotion, true);
+            p.movePiece(oldSquare, newSquare, promotion, true, false);
         } else {
-            p.movePiece(oldSquare, newSquare, promotion, false);
+            p.movePiece(oldSquare, newSquare, promotion, false, false);
             pastBoardPos[0][0] = convertBoardtoFEN();
         }
     }
