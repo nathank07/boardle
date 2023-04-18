@@ -33,7 +33,8 @@ document.querySelector('.submit').addEventListener('click', () => {
         }
     }
 });
-document.querySelector('.back').addEventListener('click', () => {
+document.querySelector('.back').addEventListener('click', back);
+function back(){
     if(document.querySelector('.unsubmitted') !== null){
         updateBoardHistory(pastBoardPos, true, "");
         p.highlightKing(gamestate[0]);
@@ -48,7 +49,22 @@ document.querySelector('.back').addEventListener('click', () => {
             flipBoard();
         }
     }
+}
+
+window.addEventListener('wheel', function(e) {
+    //scroll down
+    if (e.deltaY > 0) {
+        back();
+        
+    } 
 });
+
+window.addEventListener('keydown', function(event) {
+    if(event.key === 'ArrowLeft') {
+        back();
+    };
+});
+  
 document.querySelector('.flip').addEventListener('click', (flipBoard));
 document.querySelector('.search').addEventListener('click', () =>{
     getID(document.querySelector('input').value);
