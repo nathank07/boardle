@@ -1,6 +1,7 @@
 import getRandomPuzzle, { puzzleDetails } from "./fetch";
 import { gamestate, answerBoxes } from "./board";
 import promptAudio from '../assets/sounds/GenericNotify.ogg'
+export let promptPage;
 
 export default function updateAnswer(pastBoardPos){
     const targetRow = document.querySelector('.unsubmitted');
@@ -133,10 +134,12 @@ function displayWinLoss(win){
 
     const footer = document.createElement('div');
     footer.classList.add('footer');
-    const engineButton = document.createElement('button');
+    const engineButton = document.createElement('a');
     engineButton.classList.add('engine');
     engineButton.innerHTML = 'Engine';
-    engineButton.addEventListener("click", () => {
+    engineButton.href = puzzleDetails[3];
+    engineButton.addEventListener("click", (e) => {
+        e.preventDefault();
         window.open(puzzleDetails[3], "_blank");
     });
     const newPuzzle = document.createElement('button');
@@ -156,6 +159,20 @@ Lichess Elo: ${puzzleDetails[1]}
 \n${playerString}
 ${window.location.href}`;
         navigator.clipboard.writeText(text);
+        const shareNotif = document.createElement('div');
+        shareNotif.classList.add('clipboardNotif');
+        if(document.querySelector('.clipboardNotif')){
+            let notif = document.querySelector('.clipboardNotif');
+            let number = notif.innerHTML.match(/\d+/g);
+            if(number === null){
+                notif.innerHTML = "<div>Copied to clipboard!  <b>(2)</b></div>"
+            } else {
+                notif.innerHTML = `<div>Copied to clipboard!  <b>(${Number(number) + 1})</b></div>`;
+            }
+        } else {
+            shareNotif.innerHTML = "Copied to clipboard!";
+            prompt.appendChild(shareNotif);
+        }
     });
     footer.appendChild(engineButton);
     footer.appendChild(newPuzzle);
@@ -173,4 +190,5 @@ ${window.location.href}`;
     prompt.appendChild(playerAnswer);
     prompt.appendChild(footer);
     document.body.appendChild(overlay);
+    promptPage = overlay;
 }

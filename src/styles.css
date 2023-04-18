@@ -284,7 +284,7 @@ body{
     justify-content: space-between;
     align-items: center;
 }
-.puzzleprompt button{
+.puzzleprompt button, .puzzleprompt a{
     cursor: pointer;
     display: inline-block;
     font-weight: 400;
@@ -302,8 +302,19 @@ body{
 .puzzleprompt button.share{
     background-color: rgb(0, 116, 210);
 }
-.puzzleprompt button.engine{
+.puzzleprompt .clipboardNotif {
+	padding: 0.5rem 1.2rem 0.5rem 1.2rem;
+	margin-top: -1rem;
+	background-color: rgb(0, 116, 210);
+	display: flex;
+	width: 100%;
+	border-radius: 0px 0px 12px 12px;
+	justify-content: center;
+	align-items: center;
+}
+.puzzleprompt a.engine{
     background-color: rgb(157, 11, 11);
+    text-decoration: none;
 }
 .playerAnswer{
     margin-top: 1rem;

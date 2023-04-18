@@ -1,5 +1,5 @@
 import * as p from './pieces.js'
-import updateAnswer, { submit, colorRow } from './answerboxes.js';
+import updateAnswer, { submit, colorRow, promptPage } from './answerboxes.js';
 import getRandomPuzzle, { getID, getPuzzleByRating } from './fetch.js';
 
 export let gamestate = [false, false, false, false, false];
@@ -13,19 +13,23 @@ import wk from '../assets/cburnett/wK.svg' //white pawn
 //white | white short castle | white long castle | black short castle | black long castle
 
 document.querySelector('.submit').addEventListener('click', () => {
-    if(pastBoardPos[5][0] !== ""){
-        submit(answerBoxes);
-        if(document.querySelector('.unsubmitted') !== null){
-            pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
-            highlights = [highlights[0]]
-            createBoard(pastBoardPos[0][0]);
-            highlights[0]();
-            p.highlightKing(gamestate[0]);
-            p.selectSquare();
-            colorRow(document.querySelector('.unsubmitted'));
-        } 
-        if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
-            flipBoard();
+    if(promptPage){
+        document.body.appendChild(promptPage);
+    } else {
+        if(pastBoardPos[5][0] !== ""){
+            submit(answerBoxes);
+            if(document.querySelector('.unsubmitted') !== null){
+                pastBoardPos = [pastBoardPos[0], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
+                highlights = [highlights[0]]
+                createBoard(pastBoardPos[0][0]);
+                highlights[0]();
+                p.highlightKing(gamestate[0]);
+                p.selectSquare();
+                colorRow(document.querySelector('.unsubmitted'));
+            }
+            if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
+                flipBoard();
+            }
         }
     }
 });
@@ -142,6 +146,7 @@ function convertFENtoBoard(fen) {
 
 function convertAnswer(answer){
     answerBoxes = [];
+    promptPage = undefined;
     let answers = answer.split(" ");
     for(let i = 0; i < answers.length; i++){
         const oldSquare = p.notationToSquare(answers[i].substring(0,2));
