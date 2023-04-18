@@ -52,11 +52,12 @@ function back(){
 }
 
 window.addEventListener('wheel', function(e) {
-    //scroll down
-    if (e.deltaY > 0) {
+    if (e.deltaY > 0) { // scrolling down
+        this.document.body.classList.add('stop-scrolling');
         back();
-        
-    } 
+    } else {
+        this.document.body.classList.remove('stop-scrolling');
+    }
 });
 
 window.addEventListener('keydown', function(event) {
