@@ -69,6 +69,7 @@ export function clearAnswers(){
     });
 }
 
+
 function displayWinLoss(win){
     const overlay = document.createElement('div');
     overlay.classList.add('fulloverlay');
@@ -135,12 +136,13 @@ function displayWinLoss(win){
     const footer = document.createElement('div');
     footer.classList.add('footer');
     const engineButton = document.createElement('a');
+    const link = flipEngineLink(puzzleDetails[3]);
     engineButton.classList.add('engine');
     engineButton.innerHTML = 'Engine';
-    engineButton.href = puzzleDetails[3];
+    engineButton.href = link;
     engineButton.addEventListener("click", (e) => {
         e.preventDefault();
-        window.open(puzzleDetails[3], "_blank");
+        window.open(link, "_blank");
     });
     const newPuzzle = document.createElement('button');
     newPuzzle.classList.add('newPuzzle');
@@ -191,4 +193,17 @@ ${window.location.href}`;
     prompt.appendChild(footer);
     document.body.appendChild(overlay);
     promptPage = overlay;
+}
+
+function flipEngineLink(link){
+    if (link.includes('/black')) {
+        return link.replace('/black', '');
+      } else {
+        const index = link.lastIndexOf('#');
+        if (index === -1) {
+          return link + '/black';
+        } else {
+          return link.slice(0, index) + '/black' + link.slice(index);
+        }
+      }
 }
