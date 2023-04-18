@@ -53,8 +53,8 @@ function back(){
 
 window.addEventListener('wheel', function(e) {
     if (e.deltaY > 0) { // scrolling down
-        this.document.body.classList.add('stop-scrolling');
         window.scrollTo(0, 0);
+        this.document.body.classList.add('stop-scrolling');
         back();
     } else {
         this.document.body.classList.remove('stop-scrolling');
