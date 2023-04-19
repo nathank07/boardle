@@ -58,6 +58,9 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             arrows.clear();
+            document.querySelectorAll('.selected').forEach(square => {
+                square.classList.remove('selected');
+            });
             if(gamestate[0] === isUpperCase(p.classList[0])){
                 p.style.pointerEvents = 'auto';
                 e = e || window.event;
@@ -77,6 +80,11 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
                 document.onmouseup = closeDragElement;
                 // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
+                document.onmousedown = () => {
+                    if(event.button !== 0){
+                        movePiece(square, square, "", true, true);
+                    }
+                };
             } else {
                 if(selectedSquare !== undefined){
                     movePiece(selectedSquare, square, "", true, true);
@@ -101,39 +109,41 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
     }
     
     function closeDragElement() {
-        // stop moving when mouse button is released:
-        document.onmouseup = null;
-        document.onmousemove = null;
-        square.style.zIndex = 'auto';
-        p.style.zIndex = "2";
-        // find all potential target elements:
-        let targets = document.querySelectorAll('#board .square');
-      
-        // calculate the center coordinates of the dragged element:
-        let dragSq = p.getBoundingClientRect();
-        let dragX = dragSq.left + dragSq.width / 2;
-        let dragY = dragSq.top + dragSq.height / 2;
-      
-        // find the closest target element:
-        let closestTarget = null;
-        let closestDistance = Infinity;
-        targets.forEach(target => {
-          let targetSq = target.getBoundingClientRect();
-          let targetX = targetSq.left + targetSq.width / 2;
-          let targetY = targetSq.top + targetSq.height / 2;
-          let distance = Math.sqrt(Math.pow(dragX - targetX, 2) + Math.pow(dragY - targetY, 2));
-          if (distance < closestDistance) {
-            closestTarget = target;
-            closestDistance = distance;
-          }
-        });
-        if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
-            movePiece(square, closestTarget, "", true, true);
-        } else {
-            removePiece(square);
-            presentPiece(square, p.classList[0]);
+        if(event.button === 0){
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+            square.style.zIndex = 'auto';
+            p.style.zIndex = "2";
+            // find all potential target elements:
+            let targets = document.querySelectorAll('#board .square');
+        
+            // calculate the center coordinates of the dragged element:
+            let dragSq = p.getBoundingClientRect();
+            let dragX = dragSq.left + dragSq.width / 2;
+            let dragY = dragSq.top + dragSq.height / 2;
+        
+            // find the closest target element:
+            let closestTarget = null;
+            let closestDistance = Infinity;
+            targets.forEach(target => {
+            let targetSq = target.getBoundingClientRect();
+            let targetX = targetSq.left + targetSq.width / 2;
+            let targetY = targetSq.top + targetSq.height / 2;
+            let distance = Math.sqrt(Math.pow(dragX - targetX, 2) + Math.pow(dragY - targetY, 2));
+            if (distance < closestDistance) {
+                closestTarget = target;
+                closestDistance = distance;
+            }
+            });
+            if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
+                movePiece(square, closestTarget, "", true, true);
+            } else {
+                removePiece(square);
+                presentPiece(square, p.classList[0]);
+            }
         }
-      }
+    }
 }
 
 export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
@@ -192,9 +202,6 @@ export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
         removePiece(oldSquare);
         presentPiece(oldSquare, piece);
     }
-    document.querySelectorAll('.selected').forEach(square => {
-        square.classList.remove('selected');
-    });
     highlightKing(gamestate[0]);
 }
 

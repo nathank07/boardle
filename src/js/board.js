@@ -319,6 +319,7 @@ function annotateBoard() {
 }
 
 function colorSquare(square){
+    p.selectSquare()
     if(square.classList.contains('selected')){
         square.classList.remove('selected');
     } else {
@@ -330,6 +331,9 @@ function handleRightClick(square){
     square.onmousedown = dragMouseDown;
     function dragMouseDown(e){
         if(event.button === 2){
+            if(e.buttons >= 3){
+                return;
+            }
             if(e.target.tagName === "IMG"){
                 square = e.target.parentElement;
             } else {
