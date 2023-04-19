@@ -248,10 +248,13 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
                     nL = "";
                 }
             }
+            if(piece === "k"){
+                piece = "K";
+            }
             break;
         default:
             let notateFileRank = checkOtherPieces(piece, oldBoard, newSquare, take);
-            let newPiece = `${piece}`;
+            let newPiece = `${piece.toUpperCase}`;
             if(notateFileRank[0] && !notateFileRank[1]){ //if file needs to be notated
                 newPiece = piece += notateSquare(oldSquare).split("")[0]; 
             }
@@ -265,7 +268,7 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
             break;
 
     }
-    return `${piece.toUpperCase()}${take ? "x" : ""}${nL}${promotion}${checkmate ? "#" : check ? "+" : ""}`
+    return `${piece}${take ? "x" : ""}${nL}${promotion}${checkmate ? "#" : check ? "+" : ""}`
 }
 
 function checkOtherPieces(piece, board, targetedSquare, take){ //checks if other pieces can take and what needs to be 
