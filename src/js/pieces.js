@@ -265,7 +265,7 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
             break;
 
     }
-    return `${piece}${take ? "x" : ""}${nL}${promotion}${checkmate ? "#" : check ? "+" : ""}`
+    return `${piece.toUpperCase()}${take ? "x" : ""}${nL}${promotion}${checkmate ? "#" : check ? "+" : ""}`
 }
 
 function checkOtherPieces(piece, board, targetedSquare, take){ //checks if other pieces can take and what needs to be 
