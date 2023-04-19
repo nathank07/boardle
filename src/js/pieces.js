@@ -254,7 +254,7 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
             break;
         default:
             let notateFileRank = checkOtherPieces(piece, oldBoard, newSquare, take);
-            let newPiece = `${piece.toUpperCase}`;
+            let newPiece = `${piece.toUpperCase()}`;
             if(notateFileRank[0] && !notateFileRank[1]){ //if file needs to be notated
                 newPiece = piece += notateSquare(oldSquare).split("")[0]; 
             }
