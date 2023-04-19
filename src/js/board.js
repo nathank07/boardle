@@ -8,6 +8,7 @@ export let whiteBoardSide = true;
 export let answerBoxes = [];
 let side = true;
 export let highlights = [];
+export const arrows = new Set();
 import bk from '../assets/cburnett/bK.svg' //black pawn
 import wk from '../assets/cburnett/wK.svg' //white pawn
 //white | white short castle | white long castle | black short castle | black long castle
@@ -82,7 +83,7 @@ document.querySelectorAll('.rating button').forEach(button => {
 export default function createBoard(fen, answer){
     const board = document.getElementById('board');
     board.addEventListener('contextmenu', event => event.preventDefault());
-    document.getElementById('board').innerHTML = ""
+    document.getElementById('board').innerHTML = "";
     const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     const cfen = convertFENtoBoard(fen);
     let darkSquare = false;
@@ -96,13 +97,14 @@ export default function createBoard(fen, answer){
             darkSquare = !darkSquare;
             col.classList.add('square');
             col.classList.add(`${files[c]}`);
-            col.addEventListener('mousedown', colorSquare);
+            handleRightClick(col);
             p.presentPiece(col, cfen[r - 1][c]); 
             row.appendChild(col);
         }
         darkSquare = !darkSquare;
         board.appendChild(row);
     }
+    board.appendChild(createCanvas());
     if(pastBoardPos[0][0] === ""){
         pastBoardPos[0][0] = convertBoardtoFEN();
     }
@@ -230,6 +232,7 @@ function convertBoardtoFEN(){
 }
 
 export function flipBoard(){
+    const canvas = document.querySelector('canvas');
     let i;
     if(document.getElementById('board').firstChild.style.order !== ""){
         if(document.getElementById('board').firstChild.style.order === "-1"){
@@ -250,7 +253,8 @@ export function flipBoard(){
             square.style.order = a;
         });
     });
-    side = board.querySelector('.row').style.order > 0
+    side = board.querySelector('.row').style.order > 0;
+    side ? canvas.classList.remove('flipped') : canvas.classList.add('flipped')
     document.querySelector('.boardside').src = side ? wk : bk;
     annotateBoard();
 }
@@ -315,17 +319,113 @@ function annotateBoard() {
 }
 
 function colorSquare(square){
-    if(event.button === 2){
-        let targetSquare = square.target;
-        if(targetSquare.tagName === "IMG"){
-            targetSquare = targetSquare.parentElement;
+    if(square.classList.contains('selected')){
+        square.classList.remove('selected');
+    } else {
+        square.classList.add('selected');
+    }
+}
+
+function handleRightClick(square){
+    square.onmousedown = dragMouseDown;
+    function dragMouseDown(e){
+        if(event.button === 2){
+            if(e.target.tagName === "IMG"){
+                square = e.target.parentElement;
+            } else {
+                square = e.target;
+            }
+            document.onmouseup = closeDragElement;
         }
-        if(targetSquare.classList.contains('selected')){
-            targetSquare.classList.remove('selected');
-        } else {
-            targetSquare.classList.add('selected');
+    }
+    function closeDragElement(){
+        if(event.button === 2){
+            document.onmouseup = null;
+            document.onmousemove = null;
+            let targets = document.querySelectorAll('#board .square');
+            let closestTarget = null;
+            let closestDistance = Infinity;
+            targets.forEach(target => {
+            let targetSq = target.getBoundingClientRect();
+            let targetX = targetSq.left + targetSq.width / 2;
+            let targetY = targetSq.top + targetSq.height / 2;
+            let distance = Math.sqrt(Math.pow(event.clientX - targetX, 2) + Math.pow(event.clientY - targetY, 2));
+            if (distance < closestDistance) {
+                closestTarget = target;
+                closestDistance = distance;
+            }
+            });
+            if(closestTarget === square){
+                colorSquare(square);
+            } else {
+                if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
+                    const startX = squareToCoordinates(square)[0];
+                    const startY = squareToCoordinates(square)[1]; 
+                    const endX = squareToCoordinates(closestTarget)[0];
+                    const endY = squareToCoordinates(closestTarget)[1];
+                    const arrow = `${startX},${startY},${endX},${endY}`;
+                    if(arrows.has(arrow)){
+                        drawArrow(startX, startY, endX, endY, true) //remove arrow
+                        arrows.delete(arrow);
+                    } else {
+                        drawArrow(startX, startY, endX, endY, false)
+                        arrows.add(arrow);
+                    }
+                }
+            }
         }
     }
 }
 
 
+function createCanvas(){
+    const canvas = document.createElement('canvas');
+    canvas.width = 1600;
+    canvas.height = 1600;
+    return canvas;
+}
+
+function drawArrow(startX, startY, endX, endY, remove){ //function taken from https://github.com/frogcat/canvas-arrow
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const controlPoints = [0, 20, -75, 20, -75, 50];
+    ctx.fillStyle = 'orange';
+    ctx.globalAlpha = remove ? 1 : 0.8;
+    ctx.globalCompositeOperation = remove ? 'destination-out' : 'source-over';
+    ctx.beginPath();
+    var dx = endX - startX;
+    var dy = endY - startY;
+    var len = Math.sqrt(dx * dx + dy * dy);
+    var sin = dy / len;
+    var cos = dx / len;
+    var a = [];
+    a.push(0, 0);
+    for (var i = 0; i < controlPoints.length; i += 2) {
+      var x = controlPoints[i];
+      var y = controlPoints[i + 1];
+      a.push(x < 0 ? len + x : x, y);
+    }
+    a.push(len, 0);
+    for (var i = controlPoints.length; i > 0; i -= 2) {
+      var x = controlPoints[i - 2];
+      var y = controlPoints[i - 1];
+      a.push(x < 0 ? len + x : x, -y);
+    }
+    a.push(0, 0);
+    for (var i = 0; i < a.length; i += 2) {
+      var x = a[i] * cos - a[i + 1] * sin + startX;
+      var y = a[i] * sin + a[i + 1] * cos + startY;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.fill();
+}
+  
+
+function squareToCoordinates(square){
+    const xValues = {"a": 100, "b": 300, "c": 500, "d": 700, "e": 900, "f": 1100, "g": 1300, "h": 1500};
+    const yValues = {"8": 100, "7": 300, "6": 500, "5": 700, "4": 900, "3": 1100, "2": 1300, "1": 1500};
+    const x = xValues[p.notateSquare(square).split("")[0]]
+    const y = yValues[p.notateSquare(square).split("")[1]]
+    return [x, y]
+}

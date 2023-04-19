@@ -12,7 +12,7 @@ import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
 import move from '../assets/sounds/Move.ogg'
 import capture from '../assets/sounds/Capture.ogg'
-import { gamestate, highlights, pastBoardPos, updateBoardHistory } from './board'; 
+import { arrows, gamestate, highlights, pastBoardPos, updateBoardHistory } from './board'; 
 
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
@@ -54,6 +54,10 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
     p.onmousedown = dragMouseDown;
     function dragMouseDown(e) {
         if(event.button === 0){
+            const canvas = document.querySelector('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            arrows.clear();
             if(gamestate[0] === isUpperCase(p.classList[0])){
                 p.style.pointerEvents = 'auto';
                 e = e || window.event;
@@ -288,7 +292,7 @@ function checkOtherPieces(piece, board, targetedSquare, take){ //checks if other
     return [files.size > 1, ranks.size > 1];
 }
 
-function notateSquare(square){
+export function notateSquare(square){
     const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const rows = ["_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8"];
     let file;
@@ -911,6 +915,10 @@ export function makeSquaresClickable(){
     document.querySelector('#board').querySelectorAll('.square').forEach(square => {
         square.addEventListener('click', () => {
             if(event.button === 0){
+                const canvas = document.querySelector('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                arrows.clear();
                 if(selectedSquare !== undefined){
                     movePiece(selectedSquare, square, "", true, true);
                 }
