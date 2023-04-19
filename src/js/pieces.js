@@ -253,14 +253,14 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
         default:
             let notateFileRank = checkOtherPieces(piece, oldBoard, newSquare, take);
             let newPiece = `${piece.toUpperCase()}`;
-            if(notateFileRank[0] && !notateFileRank[1]){ //if file needs to be notated
-                newPiece = piece += notateSquare(oldSquare).split("")[0]; 
+            if(notateFileRank[0]){ //if file needs to be notated
+                newPiece = piece.toUpperCase() + notateSquare(oldSquare).split("")[0]; 
             }
             if(notateFileRank[1] && !notateFileRank[0]){//if rank needs to be notated
-                newPiece = piece += notateSquare(oldSquare).split("")[1];
+                newPiece = piece.toUpperCase() + notateSquare(oldSquare).split("")[1];
             }
-            if(notateFileRank[0] && notateFileRank[1]){//if both need to be notated
-                newPiece = piece += notateSquare(oldSquare);
+            if(notateFileRank[2]){//if both need to be notated
+                newPiece = piece.toUpperCase() + notateSquare(oldSquare);
             }
             piece = newPiece;
             break;
@@ -299,7 +299,8 @@ function checkOtherPieces(piece, board, targetedSquare, take){ //checks if other
             }
         });
     });
-    return [files.size > 1, ranks.size > 1];
+    console.log(files, ranks);
+    return [files.size > 1, ranks.size > 1, (files.size > 2 || ranks.size > 2)];
 }
 
 export function notateSquare(square){

@@ -1,7 +1,7 @@
 body{
     display: flex;
     flex-direction: column;
-    background-color: black;
+    background-color: #111110;
     margin: 0;
 }
 
@@ -17,15 +17,22 @@ body{
 
 .header{
     display:flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    background-color: rgb(54, 54, 54);
     padding: 0.5rem;
+    background: linear-gradient(90deg, rgba(181,159,59,1) 0%, rgba(83,141,78,1) 100%);
+    padding: 1rem;
+    padding-left: 2rem;
+}
+
+.header > h1{
+    margin: unset;
+    padding: unset;
 }
 
 .content{
     display:grid;
-    grid-template-columns: 0.5fr 2fr;
+    grid-template-columns: 0.4fr 2fr;
 }
 
 .content .left{
@@ -40,21 +47,21 @@ body{
 }
 
 .answRow{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    grid-gap: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
-.answRow>*{
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border: #3a3a3c solid 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+.answRow > * {
+	aspect-ratio: 1 / 1;
+	border: #3a3a3c solid 1px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 1.5vw;
+	margin-bottom: 10px;
+	flex-basis: calc(20% - 10px);
+	flex-shrink: 1;
 }
 
 #board{
@@ -90,27 +97,45 @@ body{
     grid-template-columns: repeat(8, 1fr);
 }
 
-
-.buttons button{
-    color:black;
-    width: 100%;
-    padding:0.4rem;
+.buttons button {
+    display: inline-block;
+    padding: 0px;
+    background: #111;
+    overflow: visible;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    transition: all .1s ease-out;
+    font-size: 1rem;
+    font-weight: bolder;
+    color: inherit;
+    line-height: 2.5rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
 }
 
-.buttons{
-    display:flex;
-    width: 100%;
-    margin-top: 0.8rem;
+.buttons button:hover {
+    cursor: pointer;
 }
 
-.back{
-    margin-left: 0;
-    margin-right: 0.1rem;
+.buttons button.submit:hover{
+    background-color: #538d4e;
 }
 
-.submit{
-    margin-right: 0;
-    margin-left: 0.1rem;
+.buttons button.back:hover{
+    background-color: #272522;
+}
+
+.buttons {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	margin-top: 1rem;
+	gap: 1rem;
 }
 
 .green{
@@ -176,13 +201,14 @@ body{
 }
 
 .info>div{
-    background-color: rgb(54, 54, 54);
+    background-color: #272522;
     display: flex;
     flex-direction: column;
     margin: 1rem;
     margin-right: 0;
     padding: 1rem;
     gap: 1rem;
+    border-radius: 0.5rem;
 }
 
 .flipbutton{
@@ -190,8 +216,58 @@ body{
 }
 
 .flip{
-    display: flex;
-    color: black;
+    position: relative;
+    width: 50px; /* adjust as needed */
+    height: 50px; /* adjust as needed */
+    display: inline-block;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+    border: none;
+}
+
+.flip .topKing, .flip .bottomKing{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    object-fit: cover;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: all 0.1s ease-in-out;
+}
+
+.flip .bottomKing{
+    opacity: 0;
+}
+
+.flip .topKing{
+    opacity: 1;
+}
+
+.flip:hover .flip-img {
+    transform: rotate(180deg);
+}
+
+.flip-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: invert(1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.flip:hover .topKing {
+    opacity: 0;
+}
+
+.flip:hover .bottomKing {
+    transition: all 0.1s ease-in-out;
+    opacity: 1;
 }
 
 .searchbar>* {
@@ -233,7 +309,7 @@ body{
     justify-content: center;
     position: fixed;
     z-index: 4;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
     width: 100%;
     height: 100%;
     top: 0;
@@ -300,7 +376,7 @@ body{
     padding: .375rem .75rem;
     font-size: 1rem;
     line-height: 1.5;
-    border-radius: .25rem;
+    border-radius: .5rem;
     background-color: rgb(72, 75, 77);
 
 }

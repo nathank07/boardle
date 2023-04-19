@@ -11,6 +11,7 @@ export let highlights = [];
 export const arrows = new Set();
 import bk from '../assets/cburnett/bK.svg' //black pawn
 import wk from '../assets/cburnett/wK.svg' //white pawn
+import flip from '../assets/flip.svg'
 //white | white short castle | white long castle | black short castle | black long castle
 
 document.querySelector('.submit').addEventListener('click', () => {
@@ -28,7 +29,7 @@ document.querySelector('.submit').addEventListener('click', () => {
                 p.selectSquare();
                 colorRow(document.querySelector('.unsubmitted'));
             }
-            if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
+            if(document.querySelector('.topKing').src === bk && board.querySelector('.row').style.order >= 0){
                 flipBoard();
             }
         }
@@ -46,7 +47,7 @@ function back(){
         } else {
             highlights[0]()
         }
-        if(document.querySelector('.boardside').src === bk && board.querySelector('.row').style.order >= 0){
+        if(document.querySelector('.topKing').src === bk && board.querySelector('.row').style.order >= 0){
             flipBoard();
         }
     }
@@ -69,6 +70,7 @@ window.addEventListener('keydown', function(event) {
 });
   
 document.querySelector('.flip').addEventListener('click', (flipBoard));
+document.querySelector('.flip-img').src = flip;
 document.querySelector('.search').addEventListener('click', () =>{
     getID(document.querySelector('input').value);
 })
@@ -194,7 +196,8 @@ function convertAnswer(answer){
     }
     console.log(answerBoxes);
     document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
-    document.querySelector('.boardside').src = whiteBoardSide ? wk : bk;
+    document.querySelector('.topKing').src = whiteBoardSide ? wk : bk;
+    document.querySelector('.bottomKing').src = whiteBoardSide ? bk : wk;
     colorRow(document.querySelector('.unsubmitted'));
     p.highlightKing(gamestate[0]);
     p.highlightMove(answers[answers.length - 6].substring(0,2), answers[answers.length - 6].substring(2,4));
@@ -256,7 +259,8 @@ export function flipBoard(){
     });
     side = board.querySelector('.row').style.order > 0;
     side ? canvas.classList.remove('flipped') : canvas.classList.add('flipped')
-    document.querySelector('.boardside').src = side ? wk : bk;
+    document.querySelector('.topKing').src = side ? wk : bk;
+    document.querySelector('.bottomKing').src = side ? bk : wk;
     annotateBoard();
 }
 
