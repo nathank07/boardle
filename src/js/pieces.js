@@ -82,7 +82,7 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
                 document.onmousemove = elementDrag;
                 document.onmousedown = () => {
                     if(event.button !== 0){
-                        movePiece(square, square, "", true, true);
+                        movePiece(square, square, "", true, true); //cancels event
                     }
                 };
             } else {
@@ -147,6 +147,9 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
 }
 
 export function movePiece(oldSquare, newSquare, promotion, annotate, sound){
+    if(!oldSquare.firstElementChild){
+        return;
+    }
     const board = document.getElementById('board');
     const oldBoard = [board.cloneNode(true), getBoardPos()];
     const piece = oldSquare.firstElementChild.classList[0];
