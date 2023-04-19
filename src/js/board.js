@@ -358,7 +358,7 @@ function handleRightClick(square){
             if(closestTarget === square){
                 colorSquare(square);
             } else {
-                if(closestDistance < closestTarget.getBoundingClientRect().width / 2){
+                if(closestDistance < closestTarget.getBoundingClientRect().width){
                     const startX = squareToCoordinates(square)[0];
                     const startY = squareToCoordinates(square)[1]; 
                     const endX = squareToCoordinates(closestTarget)[0];

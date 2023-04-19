@@ -81,7 +81,6 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
                 if(selectedSquare !== undefined){
                     movePiece(selectedSquare, square, "", true, true);
                 }
-                selectSquare();
             }
             selectSquare(square);
         }
