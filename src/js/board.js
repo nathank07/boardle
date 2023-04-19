@@ -114,6 +114,7 @@ export default function createBoard(fen, answer){
     }
     annotateBoard();
     p.makeSquaresClickable();
+    arrows.clear();
 }
 
 
@@ -332,6 +333,11 @@ function handleRightClick(square){
     function dragMouseDown(e){
         if(event.button === 2){
             if(e.buttons >= 3){
+                arrows.clear();
+                drawArrows();
+                document.querySelectorAll('.selected').forEach(square => {
+                    square.classList.remove('selected');
+                });
                 return;
             }
             if(e.target.tagName === "IMG"){
@@ -367,13 +373,13 @@ function handleRightClick(square){
                     const startY = squareToCoordinates(square)[1]; 
                     const endX = squareToCoordinates(closestTarget)[0];
                     const endY = squareToCoordinates(closestTarget)[1];
-                    const arrow = `${startX},${startY},${endX},${endY}`;
+                    const arrow = `${startX} ${startY} ${endX} ${endY}`;
                     if(arrows.has(arrow)){
-                        drawArrow(startX, startY, endX, endY, true) //remove arrow
                         arrows.delete(arrow);
+                        drawArrows()
                     } else {
-                        drawArrow(startX, startY, endX, endY, false)
                         arrows.add(arrow);
+                        drawArrows();
                     }
                 }
             }
@@ -389,13 +395,13 @@ function createCanvas(){
     return canvas;
 }
 
-function drawArrow(startX, startY, endX, endY, remove){ //function taken from https://github.com/frogcat/canvas-arrow
+function drawArrow(startX, startY, endX, endY){ //function taken from https://github.com/frogcat/canvas-arrow
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
     const controlPoints = [0, 20, -75, 20, -75, 50];
     ctx.fillStyle = 'orange';
-    ctx.globalAlpha = remove ? 1 : 0.8;
-    ctx.globalCompositeOperation = remove ? 'destination-out' : 'source-over';
+    ctx.globalAlpha = 0.8;
+    ctx.globalCompositeOperation = 'source-over';
     ctx.beginPath();
     var dx = endX - startX;
     var dy = endY - startY;
@@ -423,6 +429,16 @@ function drawArrow(startX, startY, endX, endY, remove){ //function taken from ht
       else ctx.lineTo(x, y);
     }
     ctx.fill();
+}
+
+export function drawArrows(){
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    arrows.forEach(arrow => {
+        const a = arrow.split(" ");
+        drawArrow(Number(a[0]), Number(a[1]), Number(a[2]), Number(a[3]));
+    });
 }
   
 

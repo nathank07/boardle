@@ -12,7 +12,7 @@ import bp from '../assets/cburnett/bP.svg' //black pawn
 import wp from '../assets/cburnett/wP.svg' //white pawn
 import move from '../assets/sounds/Move.ogg'
 import capture from '../assets/sounds/Capture.ogg'
-import { arrows, gamestate, highlights, pastBoardPos, updateBoardHistory } from './board'; 
+import { arrows, drawArrows, gamestate, highlights, pastBoardPos, updateBoardHistory } from './board'; 
 
 //white | white short castle | white long castle | black short castle | black long castle
 const isUpperCase = (string) => /^[A-Z]*$/.test(string);
@@ -54,10 +54,8 @@ function dragPiece(p, square) { // Modified function from https://www.w3schools.
     p.onmousedown = dragMouseDown;
     function dragMouseDown(e) {
         if(event.button === 0){
-            const canvas = document.querySelector('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             arrows.clear();
+            drawArrows();
             document.querySelectorAll('.selected').forEach(square => {
                 square.classList.remove('selected');
             });
@@ -927,14 +925,16 @@ export function makeSquaresClickable(){
     document.querySelector('#board').querySelectorAll('.square').forEach(square => {
         square.addEventListener('click', () => {
             if(event.button === 0){
-                const canvas = document.querySelector('canvas');
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 arrows.clear();
+                drawArrows();
+                document.querySelectorAll('.selected').forEach(square => {
+                    square.classList.remove('selected');
+                });
                 if(selectedSquare !== undefined){
                     movePiece(selectedSquare, square, "", true, true);
                 }
                 selectSquare();
+                
             }
         })
     });
