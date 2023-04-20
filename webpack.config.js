@@ -9,8 +9,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-        title: "Boardle",
-        template: 'src/index.html'
+        title: "NK Boardle",
+        template: 'src/index.html',
+        favicon: 'src/assets/icon2.svg'
     })
   ],
   module: {
