@@ -54,12 +54,8 @@ function back(){
 }
 
 window.addEventListener('wheel', function(e) {
-    if (e.deltaY > 0) { // scrolling down
-        window.scrollTo(0, 0);
-        this.document.body.classList.add('stop-scrolling');
+    if (e.deltaY < 0) { // scrolling down
         back();
-    } else {
-        this.document.body.classList.remove('stop-scrolling');
     }
 });
 
