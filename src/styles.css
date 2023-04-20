@@ -214,11 +214,21 @@ body{
 #playarea >*{
     margin:1rem;
 }
-
-#playarea >.boxes{
-    margin-left: 0rem;
+@media (max-width: 1000px) {
+    #playarea{
+        display: unset;
+    }
+    .content{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .boxes .square{
+        font-size: 1rem;
+    }
+    .rating .ratings > *{
+        margin:0.4rem
+    }
 }
-
 .info>div{
     background-color: #272522;
     display: flex;
@@ -353,6 +363,7 @@ body{
 }
 .puzzleprompt{
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -427,6 +438,7 @@ body{
 	justify-content: center;
 	align-items: center;
 }
+
 .puzzleprompt a.engine{
     background-color: rgb(157, 11, 11);
     text-decoration: none;
