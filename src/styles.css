@@ -214,21 +214,7 @@ body{
 #playarea >*{
     margin:1rem;
 }
-@media (max-width: 1000px) {
-    #playarea{
-        display: unset;
-    }
-    .content{
-        display: flex;
-        flex-direction: column-reverse;
-    }
-    .boxes .square{
-        font-size: 1rem;
-    }
-    .rating .ratings > *{
-        margin:0.4rem
-    }
-}
+
 .info>div{
     background-color: #272522;
     display: flex;
@@ -518,5 +504,34 @@ canvas{
 
 canvas.flipped{
     transform: scaleX(-1) scaleY(-1);
+}
+
+@media (max-width: 1000px) {
+    #playarea{
+        display: unset;
+    }
+    .content{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .boxes .square{
+        font-size: 1rem;
+    }
+    .rating .ratings > *{
+        font-size: 1.5rem;
+        margin: 0.2rem;
+    }
+    .answers .answer{
+        width: unset;
+    }
+    body{
+        overflow-x: hidden;
+    }
+    .info > div{
+        margin-right: 1rem;
+    }
+    html {
+        overflow-x: hidden;
+    }
 }
 
