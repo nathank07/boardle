@@ -216,7 +216,7 @@ function calculateNotation(piece, oldSquare, newSquare, take, check, checkmate, 
     switch(piece.toLowerCase()){
         case "p":
             if(nL[1] === "1" || nL[1] === "8"){
-                promotion = `=${newSquare.firstElementChild.classList[0]}`
+                promotion = `=${newSquare.firstElementChild.classList[0].toUpperCase()}`
             }
             if(take){
                 piece = notateSquare(oldSquare).split('')[0];

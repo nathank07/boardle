@@ -1,6 +1,9 @@
 import './styles.css';
 import createBoard from './js/board.js';
 import getRandomPuzzle from './js/fetch.js'
+import icon from './assets/icon.svg'
+
+document.querySelector('.header img').src = icon;
 
 //createBoard("1k1rQ3/ppp2P2/8/8/8/7P/5PP1/6K1 b - - 2 2");
 //createBoard("3r4/1p3p1p/p4p2/2bQnNk1/b5P1/2P3KP/P1P1rP2/8 w - - 0 41");

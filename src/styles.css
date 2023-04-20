@@ -17,12 +17,16 @@ body{
 
 .header{
     display:flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
     background: linear-gradient(90deg, rgba(181,159,59,1) 0%, rgba(83,141,78,1) 100%);
     padding: 1rem;
     padding-left: 2rem;
+    gap: 1rem;
+}
+.header img{
+    height: 2rem;
+    filter: invert(100%) sepia(0%) saturate(1821%) hue-rotate(226deg) brightness(110%) contrast(73%);
 }
 
 .header > h1{
@@ -97,15 +101,14 @@ body{
     grid-template-columns: repeat(8, 1fr);
 }
 
-.buttons button {
+.buttons button, .random{
     display: inline-block;
     padding: 0px;
-    background: #111;
+    background-color: #111;
     overflow: visible;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    transition: all .1s ease-out;
     font-size: 1rem;
     font-weight: bolder;
     color: inherit;
@@ -119,8 +122,22 @@ body{
     border-width: 1px;
 }
 
+.random {
+	background-color: transparent;
+	color: white;
+    height: 3rem;
+    width: 100%;
+}
+
+.random:hover {
+	background-color: #538d4e;
+	cursor: pointer;
+    transition: all .1s ease-out;
+}
+
 .buttons button:hover {
     cursor: pointer;
+    transition: all .1s ease-out;
 }
 
 .buttons button.submit:hover{
@@ -183,6 +200,7 @@ body{
 }
 
 .prompt>button:hover{
+    transition: all .1s ease-out;
     background-color: rgba(0,0,0,0.2);
     cursor: pointer;
 }
@@ -211,19 +229,25 @@ body{
     border-radius: 0.5rem;
 }
 
-.flipbutton{
-    color: black;
+.info > div > .bar {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	gap: 0.5rem;
 }
 
-.flip{
-    position: relative;
-    width: 50px; /* adjust as needed */
-    height: 50px; /* adjust as needed */
-    display: inline-block;
-    padding: 0;
-    background: transparent;
-    overflow: visible;
-    border: none;
+
+.flip {
+	position: relative;
+	width: 3rem;
+	height: 3rem;
+	display: inline-block;
+	padding: 0;
+	background: transparent;
+	overflow: hidden;
+	border: none;
+	cursor: pointer;
+	flex-shrink: 0;
 }
 
 .flip .topKing, .flip .bottomKing{
@@ -235,7 +259,6 @@ body{
     object-fit: cover;
     z-index: 1;
     transform: translate(-50%, -50%);
-    transition: all 0.1s ease-in-out;
 }
 
 .flip .bottomKing{
@@ -262,6 +285,7 @@ body{
 }
 
 .flip:hover .topKing {
+    transition: all .1s ease-out;
     opacity: 0;
 }
 
@@ -270,14 +294,22 @@ body{
     opacity: 1;
 }
 
-.searchbar>* {
-    color:black
+.searchbar {
+	display: flex;
+	align-items: center;
+	background-color: #111110;
+	padding: 8px;
+	width: 110%;
+	margin-left: -1rem;
 }
 
-.random{
-    color:black;
-    width: 65%;
-    padding: 0.5rem;
+.searchbar input {
+	flex: 1;
+	border: none;
+	outline: none;
+	font-size: 1rem;
+	padding: 8px;
+	background-color: transparent;
 }
 
 .rating > div:last-child{
@@ -288,7 +320,7 @@ body{
     margin-left: 0;
 }
 
-.rating:last-of-type button{
+.rating .ratings>*{
     font-size: large;
     border: none;
     background-color: rgb(19, 133, 226);
@@ -298,7 +330,8 @@ body{
     padding-right: 8px;
 }
 
-.rating:last-of-type button:hover{
+.rating .ratings>*:hover{
+    transition: all .1s ease-in-out;
     background-color: rgba(0,0,0,0.2);
     cursor:pointer;
 }

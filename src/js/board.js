@@ -70,9 +70,12 @@ window.addEventListener('keydown', function(event) {
 });
   
 document.querySelector('.flip').addEventListener('click', (flipBoard));
+document.querySelector('.topKing').src = wk;
 document.querySelector('.flip-img').src = flip;
-document.querySelector('.search').addEventListener('click', () =>{
-    getID(document.querySelector('input').value);
+document.querySelector('input').addEventListener('keyup', () =>{
+    if(event.key === "Enter"){
+        getID(document.querySelector('input').value);
+    }
 })
 document.querySelector('.random').addEventListener('click', () => {
     getRandomPuzzle();
