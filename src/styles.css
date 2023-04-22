@@ -510,7 +510,7 @@ canvas.flipped{
     .content{
         display: flex;
         flex-direction: column-reverse;
-        overflow-y: auto;
+        overflow-y: hidden;
     }
     .boxes .square{
         font-size: 1rem;
