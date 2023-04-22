@@ -6,7 +6,7 @@ export let puzzleDetails;
 export async function getID(id){
     try {
         displayLoadingScreen();
-        const response = await fetch(`http://nathank7256.pythonanywhere.com/searchpuzzle/${id}`);
+        const response = await fetch(`https://nathank7256.pythonanywhere.com/searchpuzzle/${id}`);
         const data = await response.json();
         if(!response.ok) {
             throw response.status;
@@ -16,7 +16,6 @@ export async function getID(id){
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         clearAnswers();
         puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
-        console.log(data);
         return createBoard(data.fen, data.moves);
     } catch (error) {
         displayLoadingScreen();
@@ -27,7 +26,7 @@ export async function getID(id){
 export default async function getPuzzleByRating(rating){
     try {
         displayLoadingScreen();
-        const response = await fetch(`http://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
+        const response = await fetch(`https://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
         const data = await response.json();
         if(!response.ok) {
             throw response.status;
@@ -48,7 +47,7 @@ export async function getRandomPuzzle(){
     try {
         displayLoadingScreen();
         const rating = weightedRandom()
-        const response = await fetch(`http://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
+        const response = await fetch(`https://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
         const data = await response.json();
         if(!response.ok) {
             throw response.status;

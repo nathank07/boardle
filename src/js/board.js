@@ -75,8 +75,7 @@ document.querySelector('input').addEventListener('keyup', () =>{
 })
 document.querySelector('.random').addEventListener('click', () => {
     const slider = document.getElementById('slider');
-    if(slider.noUiSlider.get()[0] !== 400 && slider.noUiSlider.get()[1] !== 3100){
-        console.log(slider.noUiSlider.get())
+    if(!(slider.noUiSlider.get()[0] === 400 && slider.noUiSlider.get()[1] === 3100)){
         getPuzzleByRating(chooseNumber(slider.noUiSlider.get()));
     } else {
         getRandomPuzzle();
@@ -194,7 +193,7 @@ function convertAnswer(answer){
             flipBoard()
         }
     }
-    console.log(answerBoxes);
+    //console.log(answerBoxes);
     document.querySelector('.firstMove').innerHTML = `${whiteBoardSide ? "White" : "Black"} to move.`
     document.querySelector('.topKing').src = whiteBoardSide ? wk : bk;
     document.querySelector('.bottomKing').src = whiteBoardSide ? bk : wk;

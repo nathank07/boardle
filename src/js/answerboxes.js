@@ -1,4 +1,4 @@
-import getRandomPuzzle, { puzzleDetails } from "./fetch";
+import { getRandomPuzzle, puzzleDetails } from "./fetch";
 import { gamestate, answerBoxes } from "./board";
 import promptAudio from '../assets/sounds/GenericNotify.ogg'
 export let promptPage;
