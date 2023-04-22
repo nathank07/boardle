@@ -299,7 +299,6 @@ function checkOtherPieces(piece, board, targetedSquare, take){ //checks if other
             }
         });
     });
-    console.log(files, ranks);
     return [files.size > 1, ranks.size > 1, (files.size > 2 || ranks.size > 2)];
 }
 

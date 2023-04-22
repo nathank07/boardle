@@ -1,6 +1,6 @@
 import * as p from './pieces.js'
 import updateAnswer, { submit, colorRow, promptPage } from './answerboxes.js';
-import getRandomPuzzle, { getID, getPuzzleByRating } from './fetch.js';
+import getPuzzleByRating, { chooseNumber, getID } from './fetch.js';
 
 export let gamestate = [false, false, false, false, false];
 export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
@@ -74,13 +74,13 @@ document.querySelector('input').addEventListener('keyup', () =>{
     }
 })
 document.querySelector('.random').addEventListener('click', () => {
-    getRandomPuzzle();
+    const slider = document.getElementById('slider');
+    if(slider.noUiSlider.get() !== [400, 3100]){
+        getPuzzleByRating(chooseNumber(slider.noUiSlider.get()));
+    } else {
+        getRandomPuzzle();
+    }
 })
-document.querySelectorAll('.rating button').forEach(button => {
-    button.addEventListener('click', ()=>{
-        getPuzzleByRating(button.textContent);
-    })
-});
 export default function createBoard(fen, answer){
     const board = document.getElementById('board');
     board.addEventListener('contextmenu', event => event.preventDefault());

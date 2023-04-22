@@ -2,25 +2,16 @@ import createBoard from './board.js';
 import { clearAnswers } from './answerboxes.js';
 export let puzzleDetails;
 
-export default async function getRandomPuzzle(){
-    try {
-        const rating = weightedRandom()
-        const response = await fetch(`http://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
-        const data = await response.json();
-        document.querySelector('.id').innerHTML = "ID: #" + data.id;
-        document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
-        clearAnswers();
-        puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
-        return createBoard(data.fen, data.moves)
-    } catch (error) {
-        console.error(error);
-    }
-}
 
 export async function getID(id){
     try {
+        displayLoadingScreen();
         const response = await fetch(`http://nathank7256.pythonanywhere.com/searchpuzzle/${id}`);
         const data = await response.json();
+        if(!response.ok) {
+            throw response.status;
+        }
+        document.getElementById('board').removeChild(document.querySelector('.loading'));
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         clearAnswers();
@@ -28,25 +19,53 @@ export async function getID(id){
         console.log(data);
         return createBoard(data.fen, data.moves);
     } catch (error) {
-        console.error(error);
+        displayLoadingScreen();
+        document.querySelector('.loading').innerHTML = error;
     }
 }
 
-export async function getPuzzleByRating(rating){
+export default async function getPuzzleByRating(rating){
     try {
+        displayLoadingScreen();
         const response = await fetch(`http://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
         const data = await response.json();
+        if(!response.ok) {
+            throw response.status;
+        }
+        document.getElementById('board').removeChild(document.querySelector('.loading'));
         document.querySelector('.id').innerHTML = "ID: #" + data.id;
         document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
         clearAnswers();
         puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
         return createBoard(data.fen, data.moves);
     } catch (error) {
-        console.error(error);
+        displayLoadingScreen();
+        document.querySelector('.loading').innerHTML = error;
     }
 }
 
-  function weightedRandom() { //hard coded randomization loosely based on lines in filtered_puzzles db
+export async function getRandomPuzzle(){
+    try {
+        displayLoadingScreen();
+        const rating = weightedRandom()
+        const response = await fetch(`http://nathank7256.pythonanywhere.com/searchbyrating/${rating}`);
+        const data = await response.json();
+        if(!response.ok) {
+            throw response.status;
+        }
+        document.getElementById('board').removeChild(document.querySelector('.loading'));
+        document.querySelector('.id').innerHTML = "ID: #" + data.id;
+        document.querySelector('.elo').innerHTML = "Lichess Elo: " + data.rating + "±" + data.ratingDeviation;
+        clearAnswers();
+        puzzleDetails = [data.id, data.rating, data.ratingDeviation, data.games];
+        return createBoard(data.fen, data.moves)
+    } catch (error) {
+        displayLoadingScreen();
+        document.querySelector('.loading').innerHTML = error;
+    }
+}
+
+function weightedRandom() { //hard coded randomization loosely based on lines in filtered_puzzles db
     const weightedRatings = [
         { rating: 300, percentage: 0.25 },
         { rating: 400, percentage: 0.25 },
@@ -88,4 +107,21 @@ export async function getPuzzleByRating(rating){
     }
     randomNum -= percentage;
   }
+}
+
+export function chooseNumber(arr){
+    const min = arr[0]/100
+    const max = arr[1]/100
+    return (Math.floor(Math.random() * (max - min + 1)) + min)*100;
+}
+
+function displayLoadingScreen(){
+    const board = document.getElementById('board');
+    if(document.querySelector('.loading')){
+        board.removeChild(document.querySelector('.loading'));
+    }
+    const loading = document.createElement('div');
+    loading.classList.add('loading');
+    loading.innerHTML = "Loading Puzzle..."
+    board.appendChild(loading);
 }

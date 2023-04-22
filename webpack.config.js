@@ -27,6 +27,10 @@ module.exports = {
         {
           test: /\.ogg$/,
           use: 'file-loader'
+        },
+        {
+          test: /nouislider\.min\.js$/,
+          use: 'imports-loader'
         }
     ]
   }
