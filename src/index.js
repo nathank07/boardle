@@ -3,7 +3,7 @@ import createBoard from './js/board.js';
 import icon from './assets/icon.svg'
 import noUiSlider from 'nouislider'
 import 'nouislider/dist/nouislider.css';
-import getPuzzleByRating, { chooseNumber } from './js/fetch.js';
+import getPuzzleByRating, { chooseNumber, getID } from './js/fetch.js';
 
 document.querySelector('.header img').src = icon;
 
@@ -36,5 +36,10 @@ noUiSlider.create(slider, {
 })
 
 
-getPuzzleByRating(chooseNumber(slider.noUiSlider.get()));
+if(window.location.search){
+    getID(window.location.search.split('=')[1])
+} else {
+    getPuzzleByRating(chooseNumber(slider.noUiSlider.get()));
+}
+
 

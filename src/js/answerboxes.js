@@ -159,7 +159,7 @@ function displayWinLoss(win){
 `NK Boardle #${puzzleDetails[0]} ${tries}/5 ${win ? "ت" : ""}
 Lichess Elo: ${puzzleDetails[1]}
 \n${playerString}
-${window.location.href}`;
+${window.location.origin}/puzzle?=${puzzleDetails[0]}`;
         navigator.clipboard.writeText(text);
         const shareNotif = document.createElement('div');
         shareNotif.classList.add('clipboardNotif');
