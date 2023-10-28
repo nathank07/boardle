@@ -1,5 +1,5 @@
-import { getRandomPuzzle, puzzleDetails } from "./fetch";
-import { gamestate, answerBoxes } from "./board";
+import getPuzzleByRating, { puzzleDetails, chooseNumber } from "./fetch";
+import { gamestate, answerBoxes, slider } from "./board";
 import promptAudio from '../assets/sounds/GenericNotify.ogg'
 export let promptPage;
 
@@ -149,7 +149,7 @@ function displayWinLoss(win){
     newPuzzle.innerHTML = 'New Puzzle';
     newPuzzle.addEventListener('click', () => {
         overlay.remove()
-        getRandomPuzzle();
+        getPuzzleByRating(chooseNumber(slider.noUiSlider.get()))
     });
     const shareButton = document.createElement('button');
     shareButton.classList.add('share');

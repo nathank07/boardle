@@ -6,6 +6,7 @@ export let gamestate = [false, false, false, false, false];
 export let pastBoardPos = [["", ""], ["", ""], ["", ""], ["", ""], ["", ""], ["", ""]];
 export let whiteBoardSide = true;
 export let answerBoxes = [];
+export const slider = document.getElementById('slider');
 let side = true;
 export let highlights = [];
 export const arrows = new Set();
@@ -74,7 +75,6 @@ document.querySelector('input').addEventListener('keyup', () =>{
     }
 })
 document.querySelector('.random').addEventListener('click', () => {
-    const slider = document.getElementById('slider');
     if(!(slider.noUiSlider.get()[0] === 400 && slider.noUiSlider.get()[1] === 3100)){
         getPuzzleByRating(chooseNumber(slider.noUiSlider.get()));
     } else {
